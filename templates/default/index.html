@@ -1,0 +1,47 @@
+<?php
+/**
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
+ *
+ * 이메일 본문 템플릿을 정의한다.
+ *
+ * @file /modules/email/templates/default/index.html
+ * @author Arzz <arzz@arzz.com>
+ * @license MIT License
+ * @modified 2023. 6. 10.
+ *
+ * @var Template $template 템플릿
+ * @var string $logo 메일을 발송한 사이트로고 URL
+ * @var string $emblem 메일을 발송한 사이트엠블럼 URL
+ * @var string $content 메일본문
+ */
+if (defined('__IM__') == false) {
+    exit();
+}
+?>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4";>
+    <tr>
+        <td align="center">
+            <table cellpadding="0" cellspacing="0" width="540" style="background: #ffffff;">
+                <tr>
+                    <td style="background:<?php echo $template->getConfigs('color'); ?>; padding:30px 0px; font-size:0; text-align:center;">
+                        <?php if ($template->getConfigs('image') == 'EMBLEM') { ?>
+                        <img src="<?php echo $emblem ?>" width="50" />
+                        <?php } else { ?>
+                        <img src="<?php echo $logo; ?>" height="50" />
+                        <?php } ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px; line-height: 1.6; font-size: 14px">
+                        <?php echo $content; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background: #e5e5e5; font-size: 12px; color: #666; padding: 20px; line-height: 1.6; word-break: break-all;">
+                        <?php echo nl2br($template->getConfigs('message')); ?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

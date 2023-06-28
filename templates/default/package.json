@@ -1,0 +1,39 @@
+{
+    "title": {
+        "ko": "기본 이메일 템플릿"
+    },
+    "version": "4.0.0",
+    "author": {
+        "name": "Arzz",
+        "email": "arzz@arzz.com"
+    },
+    "homepage": "https://www.imodules.io",
+    "language": "ko",
+    "configs": {
+        "color": {
+            "label": {
+                "ko": "헤더색상"
+            },
+            "type": "color",
+            "default": "#0075f8"
+        },
+        "image": {
+            "label": {
+                "ko": "헤더이미지"
+            },
+            "type": "select",
+            "options": {
+                "LOGO": "사이트로고",
+                "EMBLEM": "엠블럼이미지"
+            },
+            "default": "LOGO"
+        },
+        "message": {
+            "label": {
+                "ko": "하단메시지"
+            },
+            "type": "text",
+            "default": "본 메일은 발신전용으로 회신되지 않습니다."
+        }
+    }
+}

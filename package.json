@@ -1,0 +1,202 @@
+{
+    "id": "tools.moimz.imodules.modules.email",
+    "icon": "xi xi-letter",
+    "title": {
+        "ko": "이메일"
+    },
+    "version": "4.0.0",
+    "description": {
+        "ko": "이메일 발송을 위한 모듈입니다."
+    },
+    "author": {
+        "name": "Arzz",
+        "email": "arzz@arzz.com"
+    },
+    "homepage": "https://www.imodules.io",
+    "versionChecker": "https://api.moimz.com/download/latest",
+    "dependencies": {
+        "core": "4.0.0"
+    },
+    "language": "ko",
+    "global": true,
+    "admin": true,
+    "configs": {
+        "default": {
+            "type": "fieldset",
+            "label": {
+                "ko": "기본설정"
+            },
+            "items": {
+                "template": {
+                    "type": "template",
+                    "label": {
+                        "ko": "메일템플릿"
+                    },
+                    "component": {
+                        "type": "module",
+                        "name": "email"
+                    },
+                    "default": "default"
+                },
+                "default_from_address": {
+                    "type": "text",
+                    "label": {
+                        "ko": "기본발송주소"
+                    },
+                    "default": "no-reply@domain.com"
+                },
+                "default_from_name": {
+                    "type": "text",
+                    "label": {
+                        "ko": "기본발송자명"
+                    },
+                    "default": "WEBMASTER"
+                }
+            }
+        },
+        "smtp": {
+            "type": "fieldset",
+            "label": {
+                "ko": "메일서버설정"
+            },
+            "items": {
+                "smtp_host": {
+                    "type": "text",
+                    "label": {
+                        "ko": "SMTP주소"
+                    },
+                    "default": "localhost"
+                },
+                "smtp_port": {
+                    "type": "text",
+                    "label": {
+                        "ko": "포트"
+                    },
+                    "default": "465"
+                },
+                "smtp_secure": {
+                    "type": "select",
+                    "label": {
+                        "ko": "접속방식"
+                    },
+                    "options": {
+                        "NONE": {
+                            "ko": "암호화없음"
+                        },
+                        "TLS": "TLS",
+                        "SSL": "SSL"
+                    },
+                    "default": "TLS"
+                },
+                "smtp_id": {
+                    "type": "text",
+                    "label": {
+                        "ko": "SMTP 아이디"
+                    },
+                    "allowBlank": true,
+                    "default": ""
+                },
+                "smtp_password": {
+                    "type": "text",
+                    "label": {
+                        "ko": "패스워드"
+                    },
+                    "allowBlank": true,
+                    "default": ""
+                }
+            }
+        }
+    },
+    "databases": {
+        "emails": {
+            "columns": {
+                "email_id": {
+                    "type": "char",
+                    "length": 36,
+                    "comment": "메일고유값"
+                },
+                "from_address": {
+                    "type": "varchar",
+                    "length": 100,
+                    "comment": "보낸사람 메일주소"
+                },
+                "from_name": {
+                    "type": "varchar",
+                    "length": 100,
+                    "is_null": true,
+                    "comment": "보낸사람 이름"
+                },
+                "from_member_id": {
+                    "type": "int",
+                    "is_null": true,
+                    "comment": "보낸사람 회원고유값"
+                },
+                "reply_to": {
+                    "type": "json",
+                    "comment": "답장받는사람"
+                },
+                "title": {
+                    "type": "varchar",
+                    "length": 255,
+                    "comment": "제목"
+                },
+                "content": {
+                    "type": "longtext",
+                    "comment": "본문내용"
+                },
+                "template": {
+                    "type": "json",
+                    "comment": "본문템플릿"
+                },
+                "delivered_at": {
+                    "type": "int",
+                    "comment": "전송일시"
+                },
+                "status": {
+                    "type": "varchar",
+                    "length": 255,
+                    "comment": "전송상태"
+                }
+            },
+            "indexes": {
+                "email_id": "primary_key"
+            },
+            "comment": "아이모듈 메일"
+        },
+        "receivers": {
+            "columns": {
+                "email_id": {
+                    "type": "char",
+                    "length": 36,
+                    "comment": "메일고유값"
+                },
+                "to_address": {
+                    "type": "varchar",
+                    "length": 100,
+                    "comment": "보낸사람 메일주소"
+                },
+                "to_name": {
+                    "type": "varchar",
+                    "length": 100,
+                    "is_null": true,
+                    "comment": "보낸사람 이름"
+                },
+                "to_member_id": {
+                    "type": "int",
+                    "is_null": true,
+                    "comment": "보낸사람 회원고유값"
+                },
+                "type": {
+                    "type": "enum",
+                    "length": "'TO','CC','BCC'",
+                    "default": "TO",
+                    "comment": "전송방법"
+                }
+            },
+            "indexes": {
+                "email_id,to_address": "primary_key"
+            },
+            "comment": "아이모듈 메일수신자"
+        }
+    }
+}

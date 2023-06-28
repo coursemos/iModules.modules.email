@@ -1,0 +1,81 @@
+/**
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
+ *
+ * 이메일 클라이언트별 스타일 초기화를 위한 스타일시트를 정의한다.
+ *
+ * @file /modules/email/styles/email.css
+ * @author Arzz <arzz@arzz.com>
+ * @license MIT License
+ * @modified 2023. 6. 10.
+ */
+body,
+#bodyTable {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+}
+#bodyTable {
+    padding: 20px 0 30px 0;
+    background-color: #ffffff;
+}
+img,
+a img {
+    border: 0;
+    outline: none;
+    text-decoration: none;
+}
+.imageFix {
+    display: block;
+}
+table,
+td {
+    border-collapse: collapse;
+}
+/**
+ * Outlook.com(Hotmail)의 전체 너비 및 적절한 줄 높이를 허용
+ */
+.ReadMsgBody {
+    width: 100%;
+}
+.ExternalClass {
+    width: 100%;
+}
+.ExternalClass,
+.ExternalClass p,
+.ExternalClass span,
+.ExternalClass font,
+.ExternalClass td,
+.ExternalClass div {
+    line-height: 100%;
+}
+
+/**
+ * Outlook 2007 이상에서 Outlook이 추가하는 테이블 주위의 간격을 제거
+ */
+table,
+td {
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+}
+
+/**
+ * Internet Explorer에서 크기가 조정된 이미지를 렌더링하는 방식을 수정
+ */
+img {
+    -ms-interpolation-mode: bicubic;
+}
+
+/**
+ * Webkit 및 Windows 기반 클라이언트가 텍스트 크기를 자동으로 조정하지 않도록 수정
+ */
+body,
+table,
+td,
+p,
+a,
+li,
+blockquote {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}

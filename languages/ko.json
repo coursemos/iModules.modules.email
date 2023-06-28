@@ -1,0 +1,19 @@
+{
+    "admin": {
+        "configs": {
+            "default": "기본설정",
+            "template": "메일템플릿",
+            "default_from_address": "기본발송주소",
+            "default_from_name": "기본발송자명",
+            "smtp": "메일발송서버(SMTP)설정",
+            "smtp_host": "SMTP주소",
+            "smtp_port": "포트",
+            "smtp_secure": "암호화방식",
+            "smtp_auth": "인증",
+            "smtp_auth_help": "SMTP 인증이 필요한 경우 인증정보를 입력하여 주십시오.",
+            "smtp_auth_info": "SMTP 인증정보",
+            "smtp_id": "아이디",
+            "smtp_password": "패스워드"
+        }
+    }
+}
