@@ -4,12 +4,12 @@
  *
  * 이메일 구조체를 정의한다.
  *
- * @file /modules/email/Email.php
+ * @file /modules/email/dto/Email.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
  * @modified 2023. 6. 10.
  */
-namespace modules\email\dto;
+namespace modules\email\dtos;
 class Email
 {
     /**
@@ -33,27 +33,27 @@ class Email
     private bool $_is_html;
 
     /**
-     * private ?\modules\email\dto\Address $_from 보내는사람
+     * private ?\modules\email\dtos\Address $_from 보내는사람
      */
-    private ?\modules\email\dto\Address $_from;
+    private ?\modules\email\dtos\Address $_from;
 
     /**
-     * private \modules\email\dto\Address[] $_reply_to 답장받는사람
+     * private \modules\email\dtos\Address[] $_reply_to 답장받는사람
      */
     private array $_reply_to;
 
     /**
-     * private \modules\email\dto\Address[] $_address 받는사람
+     * private \modules\email\dtos\Address[] $_address 받는사람
      */
     private array $_address;
 
     /**
-     * private \modules\email\dto\Address[] $_cc 참조
+     * private \modules\email\dtos\Address[] $_cc 참조
      */
     private array $_cc;
 
     /**
-     * private \modules\email\dto\Address[] $_bcc 숨은참조
+     * private \modules\email\dtos\Address[] $_bcc 숨은참조
      */
     private array $_bcc;
 
@@ -80,10 +80,10 @@ class Email
     /**
      * 보내는 사람을 설정한다.
      *
-     * @param \modules\email\dto\Address $from
+     * @param \modules\email\dtos\Address $from
      * @return $this
      */
-    public function setFrom(\modules\email\dto\Address $from): self
+    public function setFrom(\modules\email\dtos\Address $from): self
     {
         $this->_from = $from;
         return $this;
@@ -92,10 +92,10 @@ class Email
     /**
      * 답장받는 사람을 추가한다.
      *
-     * @param \modules\email\dto\Address $reply_to
+     * @param \modules\email\dtos\Address $reply_to
      * @return $this
      */
-    public function addReplyTo(\modules\email\dto\Address $reply_to): self
+    public function addReplyTo(\modules\email\dtos\Address $reply_to): self
     {
         $this->_reply_to[] = $reply_to;
         return $this;
@@ -104,10 +104,10 @@ class Email
     /**
      * 받는 사람을 추가한다.
      *
-     * @param \modules\email\dto\Address $address
+     * @param \modules\email\dtos\Address $address
      * @return $this
      */
-    public function addAddress(\modules\email\dto\Address $address): self
+    public function addAddress(\modules\email\dtos\Address $address): self
     {
         $this->_address[] = $address;
         return $this;
@@ -116,10 +116,10 @@ class Email
     /**
      * 참조를 추가한다.
      *
-     * @param \modules\email\dto\Address $to
+     * @param \modules\email\dtos\Address $to
      * @return $this
      */
-    public function addCC(\modules\email\dto\Address $cc): self
+    public function addCC(\modules\email\dtos\Address $cc): self
     {
         $this->_cc[] = $cc;
         return $this;
@@ -128,10 +128,10 @@ class Email
     /**
      * 숨은 참조를 추가한다.
      *
-     * @param \modules\email\dto\Address $bcc
+     * @param \modules\email\dtos\Address $bcc
      * @return $this
      */
-    public function addBCC(\modules\email\dto\Address $bcc): self
+    public function addBCC(\modules\email\dtos\Address $bcc): self
     {
         $this->_bcc[] = $bcc;
         return $this;
@@ -154,9 +154,9 @@ class Email
     /**
      * 발송자를 가져온다.
      *
-     * @return ?\modules\email\dto\Address $from
+     * @return ?\modules\email\dtos\Address $from
      */
-    public function getFrom(): ?\modules\email\dto\Address
+    public function getFrom(): ?\modules\email\dtos\Address
     {
         return $this->_from;
     }
@@ -164,7 +164,7 @@ class Email
     /**
      * 답장받는사람을 가져온다.
      *
-     * @return \modules\email\dto\Address[] $reply_to
+     * @return \modules\email\dtos\Address[] $reply_to
      */
     public function getReplyTo(): array
     {
@@ -174,7 +174,7 @@ class Email
     /**
      * 수신자목록을 가져온다.
      *
-     * @return \modules\email\dto\Address[] $address
+     * @return \modules\email\dtos\Address[] $address
      */
     public function getAddress(): array
     {
@@ -184,7 +184,7 @@ class Email
     /**
      * 참조목록을 가져온다.
      *
-     * @return \modules\email\dto\Address[] $cc
+     * @return \modules\email\dtos\Address[] $cc
      */
     public function getCC(): array
     {
@@ -194,7 +194,7 @@ class Email
     /**
      * 숨은참조목록을 가져온다.
      *
-     * @return \modules\email\dto\Address[] $bcc
+     * @return \modules\email\dtos\Address[] $bcc
      */
     public function getBCC(): array
     {

@@ -4,12 +4,12 @@
  *
  * 이메일 주소 구조체를 정의한다.
  *
- * @file /modules/email/Address.php
+ * @file /modules/email/dtos/Address.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
  * @modified 2023. 6. 10.
  */
-namespace modules\email\dto;
+namespace modules\email\dtos;
 class Address
 {
     /**

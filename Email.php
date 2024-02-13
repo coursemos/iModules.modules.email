@@ -7,23 +7,20 @@
  * @file /modules/email/Email.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2023. 6. 10.
+ * @modified 2024. 2. 14.
  */
 namespace modules\email;
-
-use Template;
-
 class Email extends \Module
 {
     /**
      * 이메일 구조체를 생성한다.
      *
      * @param string $title 이메일제목
-     * @return \modules\email\dto\Email $email
+     * @return \modules\email\dtos\Email $email
      */
-    public function createEmail(string $title): \modules\email\dto\Email
+    public function createEmail(string $title): \modules\email\dtos\Email
     {
-        return new \modules\email\dto\Email($title);
+        return new \modules\email\dtos\Email($title);
     }
 
     /**
@@ -31,20 +28,20 @@ class Email extends \Module
      *
      * @param string $address 이메일주소
      * @param ?string $name 이름
-     * @return \modules\email\dto\Address $address 이메일주소 구조체
+     * @return \modules\email\dtos\Address $address 이메일주소 구조체
      */
-    public function getAddress(string $address, ?string $name = null): \modules\email\dto\Address
+    public function getAddress(string $address, ?string $name = null): \modules\email\dtos\Address
     {
-        return new \modules\email\dto\Address($address, $name);
+        return new \modules\email\dtos\Address($address, $name);
     }
 
     /**
      * 회원정보를 통해 이메일주소 구조체를 가져온다.
      *
      * @param int $member_id 회원고유값
-     * @return \modules\email\dto\Address $address 이메일주소 구조체
+     * @return \modules\email\dtos\Address $address 이메일주소 구조체
      */
-    public function getAddressFromMember(int $member_id): \modules\email\dto\Address
+    public function getAddressFromMember(int $member_id): \modules\email\dtos\Address
     {
         /**
          * @var \modules\member\Member $mMember
@@ -52,20 +49,20 @@ class Email extends \Module
         $mMember = \Modules::get('member');
         $member = $mMember->getMember($member_id);
         if ($member->getId() === 0) {
-            \ErrorHandler::print('NOT_FOUND_MEMBER');
+            \ErrorHandler::print($this->error('NOT_FOUND_MEMBER'));
         }
 
-        return new \modules\email\dto\Address($member->getEmail(), $member->getDisplayName(false), $member->getId());
+        return new \modules\email\dtos\Address($member->getEmail(), $member->getDisplayName(false), $member->getId());
     }
 
     /**
      * 메일을 전송한다.
      *
-     * @param \modules\email\dto\Email $email 전송할 메일객체
-     * @param Template $template 본문템플릿 (NULL 인 경우 모듈 기본 템플릿 사용)
+     * @param \modules\email\dtos\Email $email 전송할 메일객체
+     * @param \Template $template 본문템플릿 (NULL 인 경우 모듈 기본 템플릿 사용)
      * @return bool $success 성공여부
      */
-    public function send(\modules\email\dto\Email $email, ?Template $template = null): bool
+    public function send(\modules\email\dtos\Email $email, \Template $template = null): bool
     {
         require_once $this->getPath() . '/vendor/PHPMailer/src/Exception.php';
         require_once $this->getPath() . '/vendor/PHPMailer/src/PHPMailer.php';
@@ -135,12 +132,12 @@ class Email extends \Module
             $template = $template ?? $this->getTemplate($this->getConfigs('template'));
             $template->assign(
                 'logo',
-                $site->getLogo()?->getFullUrl('view') ??
+                $site->getLogo()?->getUrl('view', true) ??
                     \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
             );
             $template->assign(
                 'emblem',
-                $site->getEmblem()?->getFullUrl('view') ??
+                $site->getEmblem()?->getUrl('view', true) ??
                     \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
             );
             $template->assign('url', $site->getUrl());
@@ -203,5 +200,26 @@ class Email extends \Module
         }
 
         return $success;
+    }
+
+    /**
+     * 특수한 에러코드의 경우 에러데이터를 현재 클래스에서 처리하여 에러클래스로 전달한다.
+     *
+     * @param string $code 에러코드
+     * @param ?string $message 에러메시지
+     * @param ?object $details 에러와 관련된 추가정보
+     * @return \ErrorData $error
+     */
+    public function error(string $code, ?string $message = null, ?object $details = null): \ErrorData
+    {
+        switch ($code) {
+            case 'NOT_FOUND_MEMBER':
+                $error = \ErrorHandler::data($code, $this);
+                $error->message = $this->getErrorText('NOT_FOUND_MEMBER');
+                return $error;
+
+            default:
+                return parent::error($code, $message, $details);
+        }
     }
 }
