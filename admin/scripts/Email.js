@@ -6,7 +6,7 @@
  * @file /modules/email/admin/scripts/Email.ts
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 2. 19.
+ * @modified 2024. 5. 11.
  */
 var modules;
 (function (modules) {
@@ -55,20 +55,19 @@ var modules;
                             new Aui.Form.FieldSet({
                                 title: (await this.getText('admin.configs.smtp')),
                                 items: [
+                                    new Aui.Form.Field.Text({
+                                        label: (await this.getText('admin.configs.smtp_host')),
+                                        name: 'smtp_host',
+                                        allowBlank: false,
+                                        flex: 1,
+                                    }),
                                     new Aui.Form.Field.Container({
                                         items: [
                                             new Aui.Form.Field.Text({
-                                                label: (await this.getText('admin.configs.smtp_host')),
-                                                name: 'smtp_host',
-                                                allowBlank: false,
-                                                flex: 1,
-                                            }),
-                                            new Aui.Form.Field.Text({
                                                 label: (await this.getText('admin.configs.smtp_port')),
                                                 name: 'smtp_port',
-                                                labelWidth: 60,
-                                                width: 120,
                                                 allowBlank: false,
+                                                flex: 1,
                                             }),
                                             new Aui.Form.Field.Select({
                                                 label: (await this.getText('admin.configs.smtp_secure')),
@@ -80,7 +79,7 @@ var modules;
                                                 displayField: 'value',
                                                 valueField: 'value',
                                                 allowBlank: false,
-                                                width: 200,
+                                                flex: 1,
                                             }),
                                         ],
                                     }),
@@ -102,23 +101,19 @@ var modules;
                                             new Aui.Form.FieldSet({
                                                 title: (await this.getText('admin.configs.smtp_auth_info')),
                                                 items: [
-                                                    new Aui.Form.Field.Container({
-                                                        items: [
-                                                            new Aui.Form.Field.Text({
-                                                                label: (await this.getText('admin.configs.smtp_id')),
-                                                                name: 'smtp_id',
-                                                                allowBlank: false,
-                                                                flex: 1,
-                                                                disabled: true,
-                                                            }),
-                                                            new Aui.Form.Field.Text({
-                                                                label: (await this.getText('admin.configs.smtp_password')),
-                                                                name: 'smtp_password',
-                                                                allowBlank: false,
-                                                                flex: 1,
-                                                                disabled: true,
-                                                            }),
-                                                        ],
+                                                    new Aui.Form.Field.Text({
+                                                        label: (await this.getText('admin.configs.smtp_id')),
+                                                        name: 'smtp_id',
+                                                        allowBlank: false,
+                                                        flex: 1,
+                                                        disabled: true,
+                                                    }),
+                                                    new Aui.Form.Field.Text({
+                                                        label: (await this.getText('admin.configs.smtp_password')),
+                                                        name: 'smtp_password',
+                                                        allowBlank: false,
+                                                        flex: 1,
+                                                        disabled: true,
                                                     }),
                                                 ],
                                             }),
