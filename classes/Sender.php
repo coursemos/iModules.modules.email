@@ -230,9 +230,9 @@ class Sender
                 '</head>',
                 '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
                 $template->getLayout(),
-                '<img src="https://www.coursemos.kr/module/naddle/desk/api/read?id=' . // @todo naddle/desk -> email 원복예정
+                '<img src="https://www.coursemos.kr/module/email/api/read?id=' .
                     $this->_message_id .
-                    '" alt="" style="display:none;">',
+                    '" alt="" style="width:1px; height:1px;">',
                 '</body>',
                 '</html>'
             );
