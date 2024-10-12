@@ -7,20 +7,20 @@
  * @file /modules/email/Email.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 2. 14.
+ * @modified 2024. 10. 11.
  */
 namespace modules\email;
 class Email extends \Module
 {
     /**
-     * 이메일 구조체를 생성한다.
+     * 이메일을 전송하기 위한 전송자 클래스를 가져온다.
      *
-     * @param string $title 이메일제목
-     * @return \modules\email\dtos\Email $email
+     * @param \Component $component 이메일을 전송하는 컴포넌트 객체
+     * @return \modules\email\Sender $sender
      */
-    public function createEmail(string $title): \modules\email\dtos\Email
+    public function getSender(\Component $component): \modules\email\Sender
     {
-        return new \modules\email\dtos\Email($title);
+        return new \modules\email\Sender($component);
     }
 
     /**
@@ -56,150 +56,18 @@ class Email extends \Module
     }
 
     /**
-     * 메일을 전송한다.
+     * 메시지를 가져온다.
      *
-     * @param \modules\email\dtos\Email $email 전송할 메일객체
-     * @param \Template $template 본문템플릿 (NULL 인 경우 모듈 기본 템플릿 사용)
-     * @return bool $success 성공여부
+     * @param ?string $message_id 메시지아이디 (NULL 인 경우 빈 메시지 객체를 가져온다.)
+     * @return ?\modules\email\dtos\Message $message
      */
-    public function send(\modules\email\dtos\Email $email, \Template $template = null): bool
+    public function getMessage(?string $message_id = null): ?\modules\email\dtos\Message
     {
-        require_once $this->getPath() . '/vendor/PHPMailer/src/Exception.php';
-        require_once $this->getPath() . '/vendor/PHPMailer/src/PHPMailer.php';
-        require_once $this->getPath() . '/vendor/PHPMailer/src/SMTP.php';
-
-        $PHPMailer = new \PHPMailer\PHPMailer\PHPMailer(true);
-
-        try {
-            $PHPMailer->isSMTP();
-            $PHPMailer->Encoding = 'base64';
-            $PHPMailer->CharSet = 'UTF-8';
-            $PHPMailer->Host = $this->getConfigs('smtp_host');
-            $PHPMailer->SMTPAuth = $this->getConfigs('smtp_id') && $this->getConfigs('smtp_password');
-            if ($PHPMailer->SMTPAuth == true) {
-                $PHPMailer->Username = $this->getConfigs('smtp_id');
-                $PHPMailer->Password = $this->getConfigs('smtp_password');
-            }
-
-            if ($this->getConfigs('smtp_secure') != 'NONE') {
-                $PHPMailer->SMTPSecure = $this->getConfigs('smtp_secure');
-            }
-            $PHPMailer->Port = intval($this->getConfigs('smtp_port'), 10);
-
-            $from =
-                $email->getFrom() ??
-                $this->getAddress($this->getConfigs('default_from_address'), $this->getConfigs('default_from_name'));
-            $PHPMailer->setFrom($from->getAddress(), $from->getName() ?? '');
-
-            $replyTo = [];
-            foreach ($email->getReplyTo() as $address) {
-                if (isset($replyTo[$address->getAddress()]) == false) {
-                    $PHPMailer->addReplyTo($address->getAddress(), $address->getName() ?? '');
-                    $replyTo[$address->getAddress()] = [
-                        'address' => $address->getAddress(),
-                        'name' => $address->getName(),
-                        'member_id' => $address->getMemberId(),
-                    ];
-                }
-            }
-
-            $receivers = [];
-            foreach ($email->getAddress() as $address) {
-                if (isset($receivers[$address->getAddress()]) == false) {
-                    $PHPMailer->addAddress($address->getAddress(), $address->getName() ?? '');
-                    $receivers[$address->getAddress()] = [$address, 'TO'];
-                }
-            }
-
-            foreach ($email->getCC() as $address) {
-                if (isset($receivers[$address->getAddress()]) == false) {
-                    $PHPMailer->addCC($address->getAddress(), $address->getName() ?? '');
-                    $receivers[$address->getAddress()] = [$address, 'CC'];
-                }
-            }
-
-            foreach ($email->getBCC() as $address) {
-                if (isset($receivers[$address->getAddress()]) == false) {
-                    $PHPMailer->addBCC($address->getAddress(), $address->getName() ?? '');
-                    $receivers[$address->getAddress()] = [$address, 'BCC'];
-                }
-            }
-
-            $PHPMailer->isHTML(true);
-            $PHPMailer->Subject = $email->getTitle();
-
-            $site = \Sites::get();
-            $template = $template ?? $this->getTemplate($this->getConfigs('template'));
-            $template->assign(
-                'logo',
-                $site->getLogo()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
-            );
-            $template->assign(
-                'emblem',
-                $site->getEmblem()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
-            );
-            $template->assign('url', $site->getUrl());
-            $template->assign('content', $email->getContent());
-
-            $style = file_get_contents($this->getPath() . '/styles/email.css');
-            $style = preg_replace('/\/\*(.|\n)*?\*\//', '', $style);
-            $style = preg_replace('/(\n|\r\n|    )/', '', $style);
-            $body = \Html::tag(
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-                '<html xmlns="http://www.w3.org/1999/xhtml">',
-                '<head>',
-                '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />',
-                '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-                '<style type="text/css">',
-                $style,
-                '</style>',
-                '</head>',
-                '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
-                $template->getLayout(),
-                '</body>',
-                '</html>'
-            );
-
-            $PHPMailer->Body = $body;
-            $success = $PHPMailer->send();
-        } catch (\PHPMailer\PHPMailer\Exception $e) {
-            $success = $e->getMessage() . ' ' . $PHPMailer->ErrorInfo;
+        if ($message_id === null) {
+            return new \modules\email\dtos\Message();
         }
 
-        $email_id = \UUID::v1($email->getTitle());
-        $this->db()
-            ->insert($this->table('emails'), [
-                'email_id' => $email_id,
-                'from_address' => $from->getAddress(),
-                'from_name' => $from->getName(),
-                'from_member_id' => $from->getMemberId(),
-                'reply_to' => \Format::toJson(array_values($replyTo)),
-                'title' => $email->getTitle(),
-                'content' => $email->getContent(),
-                'template' => \Format::toJson([
-                    'name' => $template->getPathName(),
-                    'configs' => $template->getConfigs(),
-                ]),
-                'delivered_at' => time(),
-                'status' => $success == true ? 'SUCCESS' : $success,
-            ])
-            ->execute();
-
-        foreach ($receivers as $receiver) {
-            $this->db()
-                ->insert($this->table('receivers'), [
-                    'email_id' => $email_id,
-                    'to_address' => $receiver[0]->getAddress(),
-                    'to_name' => $receiver[0]->getName(),
-                    'to_member_id' => $receiver[0]->getMemberId(),
-                    'type' => $receiver[1],
-                ])
-                ->execute();
-        }
-
-        return $success;
+        return null;
     }
 
     /**

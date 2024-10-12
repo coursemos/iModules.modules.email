@@ -108,12 +108,12 @@
         }
     },
     "databases": {
-        "emails": {
+        "messages": {
             "columns": {
-                "email_id": {
+                "message_id": {
                     "type": "char",
                     "length": 36,
-                    "comment": "메일고유값"
+                    "comment": "메시지고유값"
                 },
                 "from_address": {
                     "type": "varchar",
@@ -147,23 +147,14 @@
                 "template": {
                     "type": "json",
                     "comment": "본문템플릿"
-                },
-                "delivered_at": {
-                    "type": "int",
-                    "comment": "전송일시"
-                },
-                "status": {
-                    "type": "varchar",
-                    "length": 255,
-                    "comment": "전송상태"
                 }
             },
             "indexes": {
-                "email_id": "primary_key"
+                "message_id": "primary_key"
             },
-            "comment": "아이모듈 메일"
+            "comment": "아이모듈 이메일 메시지"
         },
-        "receivers": {
+        "emails": {
             "columns": {
                 "email_id": {
                     "type": "char",
@@ -186,17 +177,30 @@
                     "is_null": true,
                     "comment": "보낸사람 회원고유값"
                 },
-                "type": {
+                "message_id": {
+                    "type": "char",
+                    "length": 36
+                },
+                "sended_at": {
+                    "type": "int",
+                    "comment": "전송일시"
+                },
+                "status": {
                     "type": "enum",
-                    "length": "'TO','CC','BCC'",
-                    "default": "TO",
-                    "comment": "전송방법"
+                    "length": "'TRUE','FALSE'",
+                    "default": "FALSE",
+                    "comment": "전송상태"
+                },
+                "response": {
+                    "type": "text",
+                    "is_null": true,
+                    "comment": "메일전송응답내용"
                 }
             },
             "indexes": {
-                "email_id,to_address": "primary_key"
+                "email_id": "primary_key"
             },
-            "comment": "아이모듈 메일수신자"
+            "comment": "아이모듈 메일 발송목록"
         }
     }
 }

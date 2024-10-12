@@ -7,7 +7,7 @@
  * @file /modules/email/dtos/Address.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2023. 6. 10.
+ * @modified 2024. 10. 13.
  */
 namespace modules\email\dtos;
 class Address
@@ -78,5 +78,20 @@ class Address
     public function getMemberId(): ?int
     {
         return $this->_member_id;
+    }
+
+    /**
+     * JSON 으로 변환한다.
+     *
+     * @return object $json
+     */
+    public function getJson(): object
+    {
+        $address = new \stdClass();
+        $address->address = $this->_address;
+        $address->name = $this->_name;
+        $address->member_id = $this->_member_id;
+
+        return $address;
     }
 }
