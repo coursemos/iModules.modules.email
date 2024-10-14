@@ -16,6 +16,14 @@ var modules;
         (function (admin) {
             class Email extends modules.admin.admin.Component {
                 /**
+                 * 모모 관리자 클래스를 가져온다.
+                 *
+                 * @return {modules.naddle.momo.admin.Momo} Momo
+                 */
+                getMomo() {
+                    return Admin.getModule('naddle/momo');
+                }
+                /**
                  * 모듈 환경설정 폼을 가져온다.
                  *
                  * @return {Promise<Aui.Form.Panel>} configs
