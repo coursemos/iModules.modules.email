@@ -1,18 +1,20 @@
 /**
  * 이 파일은 서비스데스크 모듈의 일부입니다. (https://www.coursemos.co.kr)
  *
- * 서비스데스크관리 화면을 구성한다.
+ * 메일 발송 히스토리를 리스트한다.
  *
- * @file /modules/naddle/desk/admin/scripts/contexts/emails.ts
- * @author youlapark <youlapark@naddle.net>
+ * @file /modules/email/admin/scripts/contexts/messages.ts
+ * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
- * @modified 2024. 10. 1.
+ * @modified 2024. 10. 15.
+ *
+ * @var \modules\naddle\desk\Desk $me
  */
 Admin.ready(async () => {
     const me = Admin.getModule('email') as modules.email.admin.Email;
 
     return new Aui.Tab.Panel({
-        id: 'emails-context',
+        id: 'messages-context',
         iconClass: 'mi mi-message-dots',
         title: '이메일관리',
         border: false,
@@ -22,24 +24,23 @@ Admin.ready(async () => {
             new Aui.Form.Field.Search({
                 id: 'keyword',
                 width: 200,
-                emptyText: '키워드',
+                emptyText: '수선지,메일주소',
                 handler: async (keyword) => {
-                    const context = Aui.getComponent('emails-context') as Aui.Tab.Panel;
-                    const emails = context.getActiveTab().getItemAt(0) as Aui.Grid.Panel;
+                    const context = Aui.getComponent('messages-context') as Aui.Tab.Panel;
+                    const messages = context.getActiveTab().getItemAt(0) as Aui.Grid.Panel;
                     if (keyword.length > 0) {
-                        emails.getStore().setParam('keyword', keyword);
+                        messages.getStore().setParam('keyword', keyword);
                     } else {
-                        emails.getStore().setParam('keyword', null);
+                        messages.getStore().setParam('keyword', null);
                     }
-                    emails.getStore().loadPage(1);
+                    messages.getStore().loadPage(1);
                 },
             }),
         ],
         items: [],
         listeners: {
             render: async (tab) => {
-                const results = await me.getMomo().viewers.get('emails');
-                console.log(results);
+                const results = await me.getMomo().viewers.get('messages');
                 if (results.success == true) {
                     for (const viewer of results.records) {
                         tab.append(
@@ -67,7 +68,7 @@ Admin.ready(async () => {
                                         columns: [
                                             {
                                                 text: '수신자',
-                                                dataIndex: 'member_id',
+                                                dataIndex: 'name',
                                                 width: 160,
                                             },
                                             {
@@ -90,22 +91,63 @@ Admin.ready(async () => {
                                                 flex: 1,
                                             },
                                             {
+                                                text: '보낸시간',
+                                                dataIndex: 'sended_at',
+                                                width: 150,
+                                                sortable: true,
+                                                renderer: (value) => {
+                                                    return Format.date('Y.m.d(D) H:i', value);
+                                                },
+                                            },
+                                            {
                                                 text: '발송상태',
                                                 dataIndex: 'status',
-                                                width: 160,
+                                                width: 100,
                                                 sortable: true,
+                                                filter: new Aui.Grid.Filter.List({
+                                                    dataIndex: 'status',
+                                                    store: new Aui.Store.Local({
+                                                        fields: ['display', { name: 'value', type: 'string' }],
+                                                        records: [
+                                                            ['성공', 'TRUE'],
+                                                            ['실패', 'FALSE'],
+                                                        ],
+                                                    }),
+                                                    displayField: 'display',
+                                                    valueField: 'value',
+                                                }),
+                                                renderer: (value) => {
+                                                    const statuses = {
+                                                        'TRUE': '성공',
+                                                        'FALSE': '실패',
+                                                    };
+                                                    return statuses[value];
+                                                },
                                             },
                                         ],
                                         store: new Aui.Store.Remote({
-                                            url: me.getProcessUrl('emails'),
+                                            url: me.getProcessUrl('messages'),
                                             primaryKeys: ['message_id'],
                                             filters: viewer.filters,
-                                            sorters: viewer.sorters ?? { title: 'ASC' },
+                                            sorters: viewer.sorters ?? { sended_at: 'DESC' },
                                             limit: 50,
                                             remoteSort: true,
                                             remoteFilter: true,
                                         }),
-                                        listeners: {},
+                                        listeners: {
+                                            update: (grid) => {
+                                                if (
+                                                    Admin.getContextSubUrl(1) !== null &&
+                                                    grid.getSelections().length == 0
+                                                ) {
+                                                    grid.select({ message_id: Admin.getContextSubUrl(1) });
+                                                }
+                                            },
+                                            selectionChange: (selection, grid) => {
+                                                //todo view 필요없다면 없애기
+                                                Aui.getComponent('messages-context').properties.setUrl();
+                                            },
+                                        },
                                     }),
                                 ],
                             })
@@ -125,11 +167,11 @@ Admin.ready(async () => {
                 const grid = panel.getItemAt(0) as Aui.Grid.Panel;
                 const keyword = Aui.getComponent('keyword') as Aui.Form.Field.Search;
                 keyword.setValue(grid.getStore().getParam('keyword') ?? null);
-                Aui.getComponent('emails-context').properties.setUrl();
+                Aui.getComponent('messages-context').properties.setUrl();
 
                 const message_id = Admin.getContextSubUrl(1);
                 if (message_id !== null) {
-                    const results = await Ajax.get(me.getProcessUrl('emails'), {
+                    const results = await Ajax.get(me.getProcessUrl('messages'), {
                         ...(await grid.getStore().getLoaderParams()),
                         message_id: message_id,
                     });
@@ -157,7 +199,8 @@ Admin.ready(async () => {
             },
         },
         setUrl: () => {
-            const context = Aui.getComponent('emails-context') as Aui.Tab.Panel;
+            //todo view 필요없다면 없애기
+            const context = Aui.getComponent('messages-context') as Aui.Tab.Panel;
             const tab = context.getActiveTab() as Aui.Tab.Panel;
             if (Admin.getContextSubUrl(0) !== tab.getId()) {
                 Admin.setContextSubUrl('/' + tab.getId());
@@ -176,7 +219,7 @@ Admin.ready(async () => {
             }
         },
         reloadAll: async () => {
-            const context = Aui.getComponent('emails-context') as Aui.Tab.Panel;
+            const context = Aui.getComponent('messages-context') as Aui.Tab.Panel;
             const reloads = [];
             for (const tab of context.getItems() as Aui.Panel[]) {
                 const grid = tab.getItemAt(0) as Aui.Grid.Panel;

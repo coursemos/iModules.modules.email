@@ -21,9 +21,9 @@ class Email extends \modules\admin\admin\Component
     {
         $contexts = [];
 
-        if ($this->hasPermission('emails') == true) {
+        if ($this->hasPermission('messages') == true) {
             $contexts[] = \modules\admin\dtos\Context::init($this)
-                ->setContext('emails')
+                ->setContext('messages')
                 ->setDefaultFolder('이메일관리', 'xi xi-tree')
                 ->setTitle('이메일발송이력', 'mi mi-message-dots', 10);
         }
@@ -40,8 +40,8 @@ class Email extends \modules\admin\admin\Component
     public function getContext(string $path): string
     {
         switch ($path) {
-            case 'emails':
-                \Html::script($this->getBase() . '/scripts/contexts/emails.js');
+            case 'messages':
+                \Html::script($this->getBase() . '/scripts/contexts/messages.js');
                 break;
         }
 
@@ -58,9 +58,8 @@ class Email extends \modules\admin\admin\Component
         $scopes = [];
 
         $scopes[] = \modules\admin\dtos\Scope::init($this)
-            ->setScope('emails', '이메일')
-            ->addChild('view', '열람')
-            ->addChild('edit', '수정');
+            ->setScope('messages', '이메일')
+            ->addChild('view', '열람');
 
         return $this->setScopes($scopes);
     }
