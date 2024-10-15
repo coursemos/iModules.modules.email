@@ -106,8 +106,28 @@ Admin.ready(async () => {
                                             dataIndex: 'sended_at',
                                             width: 150,
                                             sortable: true,
+                                            filter: new Aui.Grid.Filter.Date({
+                                                format: 'timestamp',
+                                            }),
                                             renderer: (value) => {
                                                 return Format.date('Y.m.d(D) H:i', value);
+                                            },
+                                        },
+                                        {
+                                            text: '확인시간',
+                                            dataIndex: 'read_at',
+                                            width: 150,
+                                            sortable: true,
+                                            filter: new Aui.Grid.Filter.Date({
+                                                format: 'timestamp',
+                                            }),
+                                            renderer: (value) => {
+                                                if (value != undefined) {
+                                                    return Format.date('Y.m.d(D) H:i', value);
+                                                }
+                                                else {
+                                                    return '';
+                                                }
                                             },
                                         },
                                         {

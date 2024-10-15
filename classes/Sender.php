@@ -48,6 +48,11 @@ class Sender
     private ?object $_template = null;
 
     /**
+     * @var ?string $_message_id 발송ID
+     */
+    private ?string $_message_id = null;
+
+    /**
      * 이메일 전송자 클래스를 정의한다.
      *
      * @param \Component $component 메일을 전송하는 컴포넌트 객체
@@ -225,6 +230,9 @@ class Sender
                 '</head>',
                 '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
                 $template->getLayout(),
+                '<img src="https://www.coursemos.kr/module/email/api/read?id=' .
+                    $this->_message_id .
+                    '" alt="" style="display:none;">',
                 '</body>',
                 '</html>'
             );
@@ -280,6 +288,7 @@ class Sender
 
         $success = \Event::fireEvent($mEmail, 'send', [$this, $sended_at], 'NOTNULL');
 
+        $this->_message_id = $message_id = \UUID::v1($this->getTitle());
         if ($success === null) {
             require_once $mEmail->getPath() . '/vendor/PHPMailer/src/Exception.php';
             require_once $mEmail->getPath() . '/vendor/PHPMailer/src/PHPMailer.php';
@@ -320,8 +329,6 @@ class Sender
                 $success = $e->getMessage() . ' ' . $PHPMailer->ErrorInfo;
             }
         }
-
-        $message_id = \UUID::v1($this->getTitle());
 
         $replyTo = [];
         foreach ($this->getReplyTo() as $address) {

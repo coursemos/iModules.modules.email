@@ -79,12 +79,17 @@ class Message
     private string $_sended_at;
 
     /**
+     * @var ?string $_read_at 확인일시
+     */
+    private ?string $_read_at;
+
+    /**
      * @var string $_status 발송상태
      */
     private string $_status;
 
     /**
-     * @var string $_response 발송응답내용
+     * @var ?string $_response 발송응답내용
      */
     private ?string $_response;
 
@@ -108,6 +113,8 @@ class Message
         $this->_sended_email = $message->sended_email;
         $this->_sended_name = $message->sended_name;
         $this->_sended_at = $message->sended_at;
+        $this->_read_at = $message->read_at;
+
         $this->_status = $message->status;
         $this->_response = $message->response;
     }
@@ -120,6 +127,16 @@ class Message
     public function getId(): string
     {
         return $this->_id;
+    }
+
+    /**
+     * 확인일시를 가져온다.
+     *
+     * @return ?string $read_at
+     */
+    public function getReadAt(): ?string
+    {
+        return $this->_read_at;
     }
 
     /**
@@ -181,6 +198,7 @@ class Message
         $message->sended_email = $this->_sended_email;
         $message->sended_name = $this->_sended_name;
         $message->sended_at = $this->_sended_at;
+        $message->read_at = $this->_read_at;
         $message->status = $this->_status;
         $message->response = $this->_response;
 
