@@ -175,6 +175,11 @@
                     "type": "int",
                     "comment": "발송일시"
                 },
+                "read_at": {
+                    "type": "int",
+                    "is_null": true,
+                    "comment": "확인일시"
+                },
                 "status": {
                     "type": "enum",
                     "length": "'TRUE','FALSE'",

@@ -1,0 +1,54 @@
+/**
+ * 이 파일은 서비스데스크 모듈의 일부입니다. (https://www.coursemos.co.kr)
+ *
+ *
+ *
+ * @file /modules/email/admin/styles/email.css
+ * @author pbj <ju318@ubion.co.kr>
+ * @license MIT License
+ * @modified 2024. 10. 15.
+ *
+ * @var \modules\naddle\desk\Desk $me
+ */
+
+
+div[data-component][data-type="text"][data-role="text"] {
+    & > div[data-role="container"] {
+        > div[data-role='content'] {
+            div[data-role='massages'] {
+                /* 메일 content*/
+                all: unset;
+                display: block;
+                background-color: white;
+                color: black;
+            }
+        }
+    }
+}
+
+div[data-component][data-type="panel"][data-role="grid"] {
+    & > div[data-role="container"] {
+        & > div[data-role="content"] {
+            & > div[data-role="body"] {
+                & > div[data-role="rows"], & > div[data-role="group"] {
+                    & > div[data-role="row"] {
+                        & > div[data-role] {
+                            &[data-role="column"] {
+                                > div[data-role='view'] {
+                                    /* 상태 빨강 파랑t*/
+                                    span.success {
+                                        color: blue;
+                                    }
+
+                                    span.fail {
+                                        color: red;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
