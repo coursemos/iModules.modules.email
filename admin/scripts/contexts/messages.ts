@@ -24,7 +24,7 @@ Admin.ready(async () => {
             new Aui.Form.Field.Search({
                 id: 'keyword',
                 width: 200,
-                emptyText: '수선지,메일주소',
+                emptyText: '수신자',
                 handler: async (keyword) => {
                     const context = Aui.getComponent('messages-context') as Aui.Tab.Panel;
                     const messages = context.getActiveTab().getItemAt(0) as Aui.Grid.Panel;
@@ -67,20 +67,36 @@ Admin.ready(async () => {
                                         ]),
                                         columns: [
                                             {
+                                                text: '발송자',
+                                                dataIndex: 'sended_by',
+                                                width: 260,
+                                                // renderer: (value, record) => {
+                                                //     return record.get('sended_name') + ' &lt;' + value + '&gt;';
+                                                // },
+                                                renderer: (value, record) => {
+                                                    return (
+                                                        me.getDesk().getMemberName(value) +
+                                                        ' &lt;' +
+                                                        record.get('sended_email') +
+                                                        '&gt;'
+                                                    );
+                                                },
+                                            },
+                                            {
                                                 text: '수신자',
-                                                dataIndex: 'name',
-                                                width: 160,
-                                            },
-                                            {
-                                                text: '수신자메일주소',
-                                                dataIndex: 'email',
-                                                width: 160,
-                                            },
-                                            {
-                                                text: '컴포넌트',
-                                                dataIndex: 'component_name',
-                                                width: 160,
-                                                sortable: true,
+                                                dataIndex: 'member_by',
+                                                width: 260,
+                                                // renderer: (value, record) => {
+                                                //     return record.get('name') + ' &lt;' + value + '&gt;';
+                                                // },
+                                                renderer: (value, record) => {
+                                                    return (
+                                                        me.getDesk().getMemberName(value) +
+                                                        ' &lt;' +
+                                                        record.get('email') +
+                                                        '&gt;'
+                                                    );
+                                                },
                                             },
                                             {
                                                 text: '제목',
@@ -99,6 +115,7 @@ Admin.ready(async () => {
                                                     return Format.date('Y.m.d(D) H:i', value);
                                                 },
                                             },
+
                                             {
                                                 text: '발송상태',
                                                 dataIndex: 'status',
@@ -118,8 +135,8 @@ Admin.ready(async () => {
                                                 }),
                                                 renderer: (value) => {
                                                     const statuses = {
-                                                        'TRUE': '성공',
-                                                        'FALSE': '실패',
+                                                        'TRUE': '<span class="fail">성공</span>',
+                                                        'FALSE': '<span class="success">실패</span>',
                                                     };
                                                     return statuses[value];
                                                 },
@@ -144,9 +161,53 @@ Admin.ready(async () => {
                                                 }
                                             },
                                             selectionChange: (selection, grid) => {
-                                                //todo view 필요없다면 없애기
+                                                const detail = grid.getParent().getItemAt(1) as Aui.Panel;
+
+                                                if (selection.length == 0) {
+                                                    detail.hide();
+                                                } else {
+                                                    const record = selection[0];
+                                                    detail.properties.update(detail, record);
+                                                    detail.show();
+                                                }
+
                                                 Aui.getComponent('messages-context').properties.setUrl();
                                             },
+                                        },
+                                    }),
+
+                                    new Aui.Panel({
+                                        width: 600,
+                                        minWidth: 600,
+                                        hidden: true,
+                                        border: [false, false, false, true],
+                                        resizable: [false, false, false, true],
+                                        title: new Aui.Title({
+                                            text: 'Loading...',
+                                            tools: [],
+                                        }),
+                                        items: [
+                                            new Aui.Panel({
+                                                border: false,
+                                                layout: 'row',
+                                                scrollable: false,
+                                                items: [
+                                                    new Aui.Panel({
+                                                        border: false,
+                                                        flex: 1,
+                                                        scrollable: true,
+                                                        html: '<div data-role="massages"></div>',
+                                                    }),
+                                                ],
+                                            }),
+                                        ],
+                                        update: async (tab: Aui.Tab.Panel, record: Aui.Data.Record) => {
+                                            const results = await Ajax.get(me.getProcessUrl('message'), {
+                                                message_id: record.get('message_id'),
+                                            });
+                                            tab.getTitle().setTitle(record.get('title'));
+                                            const $massages = Html.get('div[data-role=massages]', tab.$getContent());
+                                            $massages.html(String(results.data));
                                         },
                                     }),
                                 ],
@@ -199,7 +260,6 @@ Admin.ready(async () => {
             },
         },
         setUrl: () => {
-            //todo view 필요없다면 없애기
             const context = Aui.getComponent('messages-context') as Aui.Tab.Panel;
             const tab = context.getActiveTab() as Aui.Tab.Panel;
             if (Admin.getContextSubUrl(0) !== tab.getId()) {

@@ -13,6 +13,11 @@ namespace modules\email;
 class Email extends \Module
 {
     /**
+     * @var \modules\email\dtos\Message[] $_messages 이슈
+     */
+    private static array $_messages = [];
+
+    /**
      * 이메일을 전송하기 위한 전송자 클래스를 가져온다.
      *
      * @param \Component $component 이메일을 전송하는 컴포넌트 객체
@@ -61,13 +66,24 @@ class Email extends \Module
      * @param ?string $message_id 메시지아이디 (NULL 인 경우 빈 메시지 객체를 가져온다.)
      * @return ?\modules\email\dtos\Message $message
      */
-    public function getMessage(?string $message_id = null): ?\modules\email\dtos\Message
+    public function getMessage(?string $message_id = null, $is_refresh = false): ?\modules\email\dtos\Message
     {
-        if ($message_id === null) {
-            return new \modules\email\dtos\Message();
+        if ($is_refresh == false && isset(self::$_messages[$message_id]) == true) {
+            return self::$_messages[$message_id];
+        }
+        $message = $this->db()
+            ->select()
+            ->from($this->table('messages'))
+            ->where('message_id', $message_id)
+            ->getOne();
+
+        if ($message == null) {
+            self::$_messages[$message_id] = null;
+        } else {
+            self::$_messages[$message_id] = new \modules\email\dtos\Message($message);
         }
 
-        return null;
+        return self::$_messages[$message_id];
     }
 
     /**

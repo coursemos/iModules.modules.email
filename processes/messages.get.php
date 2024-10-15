@@ -4,12 +4,12 @@
  *
  * 이메일 발송 내역을 가져온다.
  *
- * @file /modules/email/processes/emails.get.php
+ * @file /modules/email/processes/messages.get.php
  * @author ju318 <ju318@naddle.net>
  * @license MIT License
  * @modified 2024. 10. 14.
  *
- * @var \modules\naddle\desk\Desk $me
+ * @var \modules\email\Email $me
  */
 if (defined('__IM_PROCESS__') == false) {
     exit();
@@ -33,7 +33,7 @@ $results->keyword = $keyword;
 
 $records = $me
     ->db()
-    ->select()
+    ->select(['message_id'])
     ->from($me->table('messages'));
 
 if ($filters !== null) {
@@ -43,14 +43,15 @@ if ($filters !== null) {
 }
 
 if ($keyword !== null) {
+    //@todo
     $records->where('(name like ? or email like ?)', ['%' . $keyword . '%', '%' . $keyword . '%']);
 }
 
 $message_id = request::get('message_id');
 if ($message_id !== null) {
-    //todo view 필요없다면 없애기
     $masasage = $records
         ->copy()
+        ->addSelect(array_keys(get_object_vars($sorters)))
         ->where('message_id', $message_id)
         ->getone();
     if ($masasage === null) {
@@ -59,6 +60,7 @@ if ($message_id !== null) {
         return;
     } else {
         foreach ($sorters as $field => $direction) {
+            $records->addSelect([$field]);
             $records->where($field, $masasage->{$field}, $direction == 'ASC' ? '<=' : '>=');
         }
         $results->success = true;
@@ -77,12 +79,15 @@ if ($sorters !== null) {
 }
 
 $total = $records->copy()->count();
-$records = $records->limit($start, $limit)->get();
-
+$records = $records->limit($start, $limit)->get('message_id');
 if ($records === null) {
     $results->success = true;
     $results->message = $me->getErrorText('NOT_FOUND_DATA');
     return;
+}
+
+foreach ($records as &$record) {
+    $record = $me->getMessage($record)->getJson();
 }
 
 $results->success = true;

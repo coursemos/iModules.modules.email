@@ -20,6 +20,14 @@ namespace modules {
                 getMomo(): modules.naddle.momo.admin.Momo {
                     return Admin.getModule('naddle/momo') as modules.naddle.momo.admin.Momo;
                 }
+                /**
+                 * 데스크 클래스를 가져온다.
+                 *
+                 * @return {modules.naddle.momo.admin.Momo} Momo
+                 */
+                getDesk(): modules.naddle.desk.admin.Desk {
+                    return Admin.getModule('naddle/desk') as modules.naddle.desk.admin.Desk;
+                }
 
                 /**
                  * 모듈 환경설정 폼을 가져온다.
