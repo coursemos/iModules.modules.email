@@ -142,21 +142,21 @@ class Message
     /**
      * 발송자를 가져온다.
      *
-     * @return \modules\naddle\desk\dtos\Member $issued_by
+     * @return \modules\member\dtos\Member $mMember
      */
-    public function getSendedBy(): \modules\naddle\desk\dtos\Member
+    public function getSendedBy(): \modules\member\dtos\Member
     {
         /**
-         * @var \modules\naddle\desk\Desk $mDesk
+         * @var \modules\member\Member $mMember
          */
-        $mDesk = \Modules::get('naddle/desk');
-        return $mDesk->getMember($this->_sended_by);
+        $mMember = \Modules::get('member');
+        return $mMember->getMember($this->_sended_by);
     }
 
     /**
      * 수신자를  가져온다.
      *
-     * @return \modules\naddle\desk\dtos\Member $issued_by
+     * @return \modules\naddle\desk\dtos\Member $mDesk
      */
     public function getMemberBy(): \modules\naddle\desk\dtos\Member
     {
