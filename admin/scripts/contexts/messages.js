@@ -55,6 +55,7 @@ Admin.ready(async () => {
                                     flex: 1,
                                     selection: { selectable: true, type: 'column', cancelable: true },
                                     autoLoad: false,
+                                    freeze: 1,
                                     bottombar: new Aui.Grid.Pagination([
                                         new Aui.Button({
                                             iconClass: 'mi mi-refresh',
@@ -66,14 +67,19 @@ Admin.ready(async () => {
                                     ]),
                                     columns: [
                                         {
+                                            text: '제목',
+                                            dataIndex: 'title',
+                                            selectable: true,
+                                            sortable: true,
+                                            minWidth: 280,
+                                            flex: 1,
+                                        },
+                                        {
                                             text: '발송자',
                                             dataIndex: 'sended_by',
                                             width: 260,
-                                            // renderer: (value, record) => {
-                                            //     return record.get('sended_name') + ' &lt;' + value + '&gt;';
-                                            // },
                                             renderer: (value, record) => {
-                                                return (me.getDesk().getMemberName(value) +
+                                                return (me.getMomo().getMemberName(value) +
                                                     ' &lt;' +
                                                     record.get('sended_email') +
                                                     '&gt;');
@@ -83,23 +89,12 @@ Admin.ready(async () => {
                                             text: '수신자',
                                             dataIndex: 'member_by',
                                             width: 260,
-                                            // renderer: (value, record) => {
-                                            //     return record.get('name') + ' &lt;' + value + '&gt;';
-                                            // },
                                             renderer: (value, record) => {
                                                 return (me.getDesk().getMemberName(value) +
                                                     ' &lt;' +
                                                     record.get('email') +
                                                     '&gt;');
                                             },
-                                        },
-                                        {
-                                            text: '제목',
-                                            dataIndex: 'title',
-                                            selectable: true,
-                                            sortable: true,
-                                            minWidth: 280,
-                                            flex: 1,
                                         },
                                         {
                                             text: '보낸시간',
@@ -149,8 +144,8 @@ Admin.ready(async () => {
                                             }),
                                             renderer: (value) => {
                                                 const statuses = {
-                                                    'TRUE': '<span class="fail">성공</span>',
-                                                    'FALSE': '<span class="success">실패</span>',
+                                                    'TRUE': '<span class="success">성공</span>',
+                                                    'FALSE': '<span class="fail">실패</span>',
                                                 };
                                                 return statuses[value];
                                             },

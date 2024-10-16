@@ -24,7 +24,6 @@ class Email extends \modules\admin\admin\Component
         if ($this->hasPermission('messages') == true) {
             $contexts[] = \modules\admin\dtos\Context::init($this)
                 ->setContext('messages')
-                ->setDefaultFolder('이메일관리', 'xi xi-tree')
                 ->setTitle('이메일발송이력', 'mi mi-message-dots', 10);
         }
 

@@ -15,7 +15,8 @@
 //@todo 보냄과 동시에 읽어지는지 등등 이슈 확인/처리
 
 $message_id = Request::get('id', true);
-if ($me->getMessage($message_id)->getReadAt() !== null) {
+
+if ($me->getMessage($message_id)->getReadAt() === null) {
     $me->db()
         ->update($me->table('messages'), ['read_at' => time()])
         ->where('message_id', $message_id)
