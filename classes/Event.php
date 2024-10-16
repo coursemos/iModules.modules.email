@@ -2,15 +2,15 @@
 /**
  * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
- * 이메일모듈의 이벤트목록을 정의한다.
+ * 이메일모듈의 이벤트를 정의한다.
  *
  * @file /modules/email/classes/Event.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 11.
+ * @modified 2024. 10. 16.
  */
 namespace modules\email;
-class Event extends \Listeners
+class Event extends \Event
 {
     /**
      * 이메일을 전송할 때 발생한다.
