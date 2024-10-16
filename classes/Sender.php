@@ -286,7 +286,7 @@ class Sender
 
         $sended_at ??= time();
 
-        $success = \Event::fireEvent($mEmail, 'send', [$this, $sended_at], 'NOTNULL');
+        $success = \Events::fireEvent($mEmail, 'send', [$this, $sended_at], 'NOTNULL');
 
         $this->_message_id = $message_id = \UUID::v1($this->getTitle());
         if ($success === null) {
