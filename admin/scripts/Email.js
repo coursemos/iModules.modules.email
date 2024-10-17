@@ -16,22 +16,6 @@ var modules;
         (function (admin) {
             class Email extends modules.admin.admin.Component {
                 /**
-                 * 모모 관리자 클래스를 가져온다.
-                 *
-                 * @return {modules.naddle.momo.admin.Momo} Momo
-                 */
-                getMomo() {
-                    return Admin.getModule('naddle/momo');
-                }
-                /**
-                 * 데스크 클래스를 가져온다.
-                 *
-                 * @return {modules.naddle.momo.admin.Momo} Momo
-                 */
-                getDesk() {
-                    return Admin.getModule('naddle/desk');
-                }
-                /**
                  * 모듈 환경설정 폼을 가져온다.
                  *
                  * @return {Promise<Aui.Form.Panel>} configs
@@ -147,6 +131,13 @@ var modules;
                             },
                         },
                     });
+                }
+                /**
+                 * 발송/수신자명을 가져온다.
+                 *
+                 */
+                getMemberName(member) {
+                    return '';
                 }
             }
             admin.Email = Email;

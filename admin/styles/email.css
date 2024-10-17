@@ -1,21 +1,17 @@
 /**
- * 이 파일은 서비스데스크 모듈의 일부입니다. (https://www.coursemos.co.kr)
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
- *
+ * 모듈 관리자 스타일시트를 정의한다.
  *
  * @file /modules/email/admin/styles/email.css
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
  * @modified 2024. 10. 15.
- *
- * @var \modules\naddle\desk\Desk $me
  */
-
-
-div[data-component][data-type="text"][data-role="text"] {
-    & > div[data-role="container"] {
+div[data-component][data-type='text'][data-role='text'] {
+    & > div[data-role='container'] {
         > div[data-role='content'] {
-            div[data-role='massages'] {
+            div[data-role='massage'] {
                 /* 메일 content*/
                 all: unset;
                 display: block;
@@ -26,14 +22,15 @@ div[data-component][data-type="text"][data-role="text"] {
     }
 }
 
-div[data-component][data-type="panel"][data-role="grid"] {
-    & > div[data-role="container"] {
-        & > div[data-role="content"] {
-            & > div[data-role="body"] {
-                & > div[data-role="rows"], & > div[data-role="group"] {
-                    & > div[data-role="row"] {
+div[data-component][data-type='panel'][data-role='grid'] {
+    & > div[data-role='container'] {
+        & > div[data-role='content'] {
+            & > div[data-role='body'] {
+                & > div[data-role='rows'],
+                & > div[data-role='group'] {
+                    & > div[data-role='row'] {
                         & > div[data-role] {
-                            &[data-role="column"] {
+                            &[data-role='column'] {
                                 > div[data-role='view'] {
                                     /* 상태 빨강 파랑t*/
                                     span.success {

@@ -214,28 +214,7 @@ class Sender
             $template->assign('url', $site->getUrl());
             $template->assign('content', $content);
 
-            $style = file_get_contents($mEmail->getPath() . '/styles/email.css');
-            $style = preg_replace('/\/\*(.|\n)*?\*\//', '', $style);
-            $style = preg_replace('/(\n|\r\n|    )/', '', $style);
-
-            $content = \Html::tag(
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-                '<html xmlns="http://www.w3.org/1999/xhtml">',
-                '<head>',
-                '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />',
-                '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-                '<style type="text/css">',
-                $style,
-                '</style>',
-                '</head>',
-                '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
-                $template->getLayout(),
-                '<img src="https://www.coursemos.kr/module/naddle/desk/api/read?id=' . // @todo naddle/desk -> email 원복예정
-                    $this->_message_id .
-                    '" alt="" style="display:none;">',
-                '</body>',
-                '</html>'
-            );
+            $content = $template->getLayout();
         }
 
         return $content;
@@ -288,7 +267,7 @@ class Sender
 
         $success = \Events::fireEvent($mEmail, 'send', [$this, $sended_at], 'NOTNULL');
 
-        $this->_message_id = $message_id = \UUID::v1($this->getTitle());
+        $message_id = \UUID::v1($this->getTitle());
         if ($success === null) {
             require_once $mEmail->getPath() . '/vendor/PHPMailer/src/Exception.php';
             require_once $mEmail->getPath() . '/vendor/PHPMailer/src/PHPMailer.php';
@@ -322,7 +301,32 @@ class Sender
 
                 $PHPMailer->isHTML(true);
                 $PHPMailer->Subject = $this->getTitle(true);
-                $PHPMailer->Body = $this->getContent(true, true);
+
+                $style = file_get_contents($mEmail->getPath() . '/styles/email.css');
+                $style = preg_replace('/\/\*(.|\n)*?\*\//', '', $style);
+                $style = preg_replace('/(\n|\r\n|    )/', '', $style);
+
+                $domain = \Domains::get();
+
+                $PHPMailer->Body = \Html::tag(
+                    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+                    '<html xmlns="http://www.w3.org/1999/xhtml">',
+                    '<head>',
+                    '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />',
+                    '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+                    '<style type="text/css">',
+                    $style,
+                    '</style>',
+                    '</head>',
+                    '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
+                    $this->getContent(true, true),
+                    '<img src="' .
+                        $domain->getUrl(true) .
+                        $mEmail->getApiUrl('checked/' . $message_id) .
+                        '" alt="" style="width:1px; height:1px;">',
+                    '</body>',
+                    '</html>'
+                );
 
                 $success = $PHPMailer->send();
             } catch (\PHPMailer\PHPMailer\Exception $e) {

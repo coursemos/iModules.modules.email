@@ -21,10 +21,10 @@ class Email extends \modules\admin\admin\Component
     {
         $contexts = [];
 
-        if ($this->hasPermission('messages') == true) {
+        if ($this->hasPermission('email') == true) {
             $contexts[] = \modules\admin\dtos\Context::init($this)
                 ->setContext('messages')
-                ->setTitle('이메일발송이력', 'mi mi-message-dots', 10);
+                ->setTitle($this->getText('admin.contexts.messages'), 'mi mi-message-dots');
         }
 
         return $contexts;
@@ -57,8 +57,9 @@ class Email extends \modules\admin\admin\Component
         $scopes = [];
 
         $scopes[] = \modules\admin\dtos\Scope::init($this)
-            ->setScope('messages', '이메일')
-            ->addChild('view', '열람');
+            ->setScope('email', $this->getText('admin.scopes.email.title'))
+            ->addChild('messages', $this->getText('admin.scopes.email.messages'))
+            ->addChild('send', $this->getText('admin.scopes.email.send'));
 
         return $this->setScopes($scopes);
     }

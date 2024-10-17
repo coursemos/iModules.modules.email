@@ -1,20 +1,19 @@
 <?php
 /**
- * 이 파일은 서비스데스크 모듈의 일부입니다. (https://www.coursemos.co.kr)
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
- * 메세지 히스토리를 정의한다.
+ * 메시지 구조체를 정의한다.
  *
  * @file /modules/email/dtos/Message.php
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
  * @modified 2024. 10. 15.
- *
  */
 namespace modules\email\dtos;
 class Message
 {
     /**
-     * @var string $_id 데스크고유값
+     * @var string $_id 메시지고유값
      */
     private string $_id;
 
@@ -94,9 +93,9 @@ class Message
     private ?string $_response;
 
     /**
-     * 데스크 구조체를 정의한다.
+     * 메시지 구조체를 정의한다.
      *
-     * @param object $message 데스크정보
+     * @param object $message 메시지정보
      */
     public function __construct(object $message)
     {
@@ -142,36 +141,38 @@ class Message
     /**
      * 발송자를 가져온다.
      *
-     * @return \modules\member\dtos\Member $mMember
+     * @return \modules\email\dtos\Address $address
      */
-    public function getSendedBy(): \modules\member\dtos\Member
+    public function getSendedBy(): \modules\email\dtos\Address
     {
         /**
-         * @var \modules\member\Member $mMember
+         * @var \modules\email\Email $mEmail
          */
-        $mMember = \Modules::get('member');
-        return $mMember->getMember($this->_sended_by);
+        $mEmail = \Modules::get('email');
+        return $mEmail->getAddress($this->_sended_email, $this->_sended_name, $this->_sended_by);
     }
 
     /**
      * 수신자를  가져온다.
      *
-     * @return \modules\naddle\desk\dtos\Member $mDesk
+     * @return \modules\email\dtos\Address $address
      */
-    public function getMemberBy(): \modules\naddle\desk\dtos\Member
+    public function getMemberBy(): \modules\email\dtos\Address
     {
         /**
-         * @var \modules\naddle\desk\Desk $mDesk
+         * @var \modules\email\Email $mEmail
          */
-        $mDesk = \Modules::get('naddle/desk');
-        return $mDesk->getMember($this->_member_id);
+        $mEmail = \Modules::get('email');
+        return $mEmail->getAddress($this->_email, $this->_name, $this->_member_id);
     }
 
     /**
      * 템플릿이 적용된 컨텐츠를 가져온다.
-     * @return string
+     *
+     * @param bool $is_template 템플릿포함여부
+     * @return string $content
      */
-    public function getTemplateContent(): string
+    public function getContent(bool $is_template = false): string
     {
         /**
          * @var \modules\email\Email $mEmail

@@ -33,11 +33,15 @@ class Email extends \Module
      *
      * @param string $address 이메일주소
      * @param ?string $name 이름
+     * @param ?int $member_id 회원고유값
      * @return \modules\email\dtos\Address $address 이메일주소 구조체
      */
-    public function getAddress(string $address, ?string $name = null): \modules\email\dtos\Address
-    {
-        return new \modules\email\dtos\Address($address, $name);
+    public function getAddress(
+        string $address,
+        ?string $name = null,
+        ?int $member_id = null
+    ): \modules\email\dtos\Address {
+        return new \modules\email\dtos\Address($address, $name, $member_id);
     }
 
     /**

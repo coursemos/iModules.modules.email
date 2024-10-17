@@ -13,23 +13,6 @@ namespace modules {
         export namespace admin {
             export class Email extends modules.admin.admin.Component {
                 /**
-                 * 모모 관리자 클래스를 가져온다.
-                 *
-                 * @return {modules.naddle.momo.admin.Momo} Momo
-                 */
-                getMomo(): modules.naddle.momo.admin.Momo {
-                    return Admin.getModule('naddle/momo') as modules.naddle.momo.admin.Momo;
-                }
-                /**
-                 * 데스크 클래스를 가져온다.
-                 *
-                 * @return {modules.naddle.momo.admin.Momo} Momo
-                 */
-                getDesk(): modules.naddle.desk.admin.Desk {
-                    return Admin.getModule('naddle/desk') as modules.naddle.desk.admin.Desk;
-                }
-
-                /**
                  * 모듈 환경설정 폼을 가져온다.
                  *
                  * @return {Promise<Aui.Form.Panel>} configs
@@ -155,6 +138,14 @@ namespace modules {
                             },
                         },
                     });
+                }
+
+                /**
+                 * 발송/수신자명을 가져온다.
+                 *
+                 */
+                getMemberName(member): string {
+                    return '';
                 }
             }
         }

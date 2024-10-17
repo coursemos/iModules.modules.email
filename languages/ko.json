@@ -14,6 +14,22 @@
             "smtp_auth_info": "SMTP 인증정보",
             "smtp_id": "아이디",
             "smtp_password": "패스워드"
+        },
+        "contexts": {
+            "messages": "이메일관리"
+        },
+        "scopes": {
+            "messages": "발송내역관리",
+            "send": "메일발송"
+        },
+        "tabs": {
+            "messages": "발송내역",
+            "send": "이메일발송"
+        },
+        "messages": {
+            "columns": {
+                "title": "제목"
+            }
         }
     }
 }
