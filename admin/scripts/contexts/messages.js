@@ -21,7 +21,7 @@ Admin.ready(async () => {
             new Aui.Form.Field.Search({
                 id: 'keyword',
                 width: 200,
-                emptyText: '수신자',
+                emptyText: await me.getText('admin.messages.form.keyword'),
                 handler: async (keyword) => {
                     const context = Aui.getComponent('messages');
                     const messages = context.getItemAt(0);
@@ -61,7 +61,7 @@ Admin.ready(async () => {
                         flex: 1,
                     },
                     {
-                        text: '발송자',
+                        text: (await me.getText('admin.messages.columns.sended_by')),
                         dataIndex: 'sended_by',
                         width: 260,
                         renderer: (value, record) => {
@@ -69,7 +69,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: '수신자',
+                        text: (await me.getText('admin.messages.columns.member_by')),
                         dataIndex: 'member_by',
                         width: 260,
                         renderer: (value, record) => {
@@ -77,7 +77,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: '보낸시간',
+                        text: (await me.getText('admin.messages.columns.sended_at')),
                         dataIndex: 'sended_at',
                         width: 150,
                         sortable: true,
@@ -89,7 +89,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: '확인시간',
+                        text: (await me.getText('admin.messages.columns.checked_at')),
                         dataIndex: 'checked_at',
                         width: 150,
                         sortable: true,
@@ -106,7 +106,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: '발송상태',
+                        text: (await me.getText('admin.messages.columns.status')),
                         dataIndex: 'status',
                         width: 100,
                         sortable: true,
@@ -115,8 +115,8 @@ Admin.ready(async () => {
                             store: new Aui.Store.Local({
                                 fields: ['display', { name: 'value', type: 'string' }],
                                 records: [
-                                    ['성공', 'TRUE'],
-                                    ['실패', 'FALSE'],
+                                    [await me.getText('admin.messages.status.true'), 'TRUE'],
+                                    [await me.getText('admin.messages.status.false'), 'FALSE'],
                                 ],
                             }),
                             displayField: 'display',
@@ -124,8 +124,8 @@ Admin.ready(async () => {
                         }),
                         renderer: (value) => {
                             const statuses = {
-                                'TRUE': '<span class="success">성공</span>',
-                                'FALSE': '<span class="fail">실패</span>',
+                                'TRUE': '<span class="success">' + me.printText('admin.messages.status.true') + '</span>',
+                                'FALSE': '<span class="fail">' + me.printText('admin.messages.status.false') + '</span>',
                             };
                             return statuses[value];
                         },
@@ -213,7 +213,7 @@ Admin.ready(async () => {
                     detail.properties.loading ??= new Aui.Loading(detail, {
                         type: 'column',
                         direction: 'column',
-                        text: '데이터를 불러오고 있습니다.',
+                        text: me.printText('admin.contexts.loading'),
                     }).show();
                     const results = await Ajax.get(me.getProcessUrl('message'), {
                         message_id: record.get('message_id'),
