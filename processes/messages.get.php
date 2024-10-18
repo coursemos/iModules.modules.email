@@ -40,7 +40,7 @@ if ($filters !== null) {
     $records->setFilters($filters, 'AND', [
         'status' => 'status',
         'sended_at' => 'sended_at',
-        'read_at' => 'read_at',
+        'checked_at' => 'checked_at',
     ]);
 }
 
