@@ -179,7 +179,7 @@ class Message
          */
         $mEmail = \Modules::get('email');
         $sender = $mEmail->getSender(\Modules::get($this->_component_name));
-        return $sender->setContent($this->_content)->getContent(true, true);
+        return $sender->getContent(true, $this->_content);
     }
 
     public function getJson(): object
