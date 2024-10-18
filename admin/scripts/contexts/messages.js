@@ -23,8 +23,8 @@ Admin.ready(async () => {
                 width: 200,
                 emptyText: '수신자',
                 handler: async (keyword) => {
-                    const context = Aui.getComponent('messages-context');
-                    const messages = context.getActiveTab().getItemAt(0);
+                    const context = Aui.getComponent('messages');
+                    const messages = context.getItemAt(0);
                     if (keyword.length > 0) {
                         messages.getStore().setParam('keyword', keyword);
                     }
@@ -40,7 +40,7 @@ Admin.ready(async () => {
                 border: false,
                 flex: 1,
                 selection: { selectable: true, type: 'column', cancelable: true },
-                autoLoad: true,
+                autoLoad: false,
                 freeze: 1,
                 bottombar: new Aui.Grid.Pagination([
                     new Aui.Button({
@@ -140,9 +140,29 @@ Admin.ready(async () => {
                     remoteFilter: true,
                 }),
                 listeners: {
+                    render: async (grid) => {
+                        const message_id = Admin.getContextSubUrl(0);
+                        if (message_id !== null) {
+                            const results = await Ajax.get(me.getProcessUrl('messages'), {
+                                ...(await grid.getStore().getLoaderParams()),
+                                message_id: message_id,
+                            });
+                            if (results.success == true) {
+                                if (results.page == -1) {
+                                    grid.getStore().load();
+                                }
+                                else {
+                                    grid.getStore().loadPage(results.page);
+                                }
+                            }
+                        }
+                        if (grid.getStore().isLoaded() == false) {
+                            grid.getStore().load();
+                        }
+                    },
                     update: (grid) => {
-                        if (Admin.getContextSubUrl(1) !== null && grid.getSelections().length == 0) {
-                            grid.select({ message_id: Admin.getContextSubUrl(1) });
+                        if (Admin.getContextSubUrl(0) !== null && grid.getSelections().length == 0) {
+                            grid.select({ message_id: Admin.getContextSubUrl(0) });
                         }
                     },
                     selectionChange: (selection, grid) => {
@@ -155,12 +175,17 @@ Admin.ready(async () => {
                             detail.properties.update(detail, record);
                             detail.show();
                         }
-                        Aui.getComponent('messages-context').properties.setUrl();
+                        if (grid.getStore().isLoaded() == true && grid.getSelections().length !== 0) {
+                            const record = grid.getSelections()[0];
+                            if (Admin.getContextSubUrl(1) !== record.get('message_id')) {
+                                Admin.setContextSubUrl('/' + record.get('message_id'));
+                            }
+                        }
                     },
                 },
             }),
             new Aui.Panel({
-                width: 540, //@todo : 템플릿에 따라 다를 여지가 있음.
+                width: 540, // 템플릿에 따라 다를 여지가 있음.
                 hidden: true,
                 border: [false, false, false, true],
                 resizable: [false, false, false, true],

@@ -45,7 +45,6 @@ if ($filters !== null) {
 }
 
 if ($keyword !== null) {
-    //@todo
     $records->where('(name like ? or email like ?)', ['%' . $keyword . '%', '%' . $keyword . '%']);
 }
 
@@ -79,8 +78,10 @@ if ($sorters !== null) {
         $records->orderBy('title', 'ASC');
     }
 }
+
 $total = $records->copy()->count();
 $records = $records->limit($start, $limit)->get('message_id');
+
 if ($records === null) {
     $results->success = true;
     $results->message = $me->getErrorText('NOT_FOUND_DATA');
