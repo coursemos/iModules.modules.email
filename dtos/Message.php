@@ -7,7 +7,7 @@
  * @file /modules/email/dtos/Message.php
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
- * @modified 2024. 10. 15.
+ * @modified 2024. 10. 18.
  */
 namespace modules\email\dtos;
 class Message

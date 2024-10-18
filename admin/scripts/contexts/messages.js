@@ -1,14 +1,13 @@
 /**
  * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
- * 메일 발송 히스토리를 리스트한다.
+ * 이메일 발송 내역 화면을 구성한다.
  *
  * @file /modules/email/admin/scripts/contexts/messages.ts
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
- * @modified 2024. 10. 15.
+ * @modified 2024. 10. 18.
  *
- * @var \modules\naddle\desk\Desk $me
  */
 Admin.ready(async () => {
     const me = Admin.getModule('email');
@@ -58,7 +57,8 @@ Admin.ready(async () => {
                         dataIndex: 'title',
                         selectable: true,
                         sortable: true,
-                        width: 300,
+                        minWidth: 300,
+                        flex: 1,
                     },
                     {
                         text: '발송자',
@@ -160,8 +160,7 @@ Admin.ready(async () => {
                 },
             }),
             new Aui.Panel({
-                width: 600,
-                minWidth: 600,
+                width: 540, //@todo : 템플릿에 따라 다를 여지가 있음.
                 hidden: true,
                 border: [false, false, false, true],
                 resizable: [false, false, false, true],

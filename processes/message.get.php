@@ -2,12 +2,12 @@
 /**
  * 이 파일은 이메일 모듈의 일부입니다. (https://www.coursemos.co.kr)
  *
- * 이메일 발송 디테일을 가져온다.
+ * 이메일 발송 내역 디테일을 가져온다.
  *
  * @file /modules/email/processes/message.get.php
  * @author ju318 <ju318@naddle.net>
  * @license MIT License
- * @modified 2024. 10. 15.
+ * @modified 2024. 10. 18.
  *
  * @var \modules\email\Email $me
  */

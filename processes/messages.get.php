@@ -7,7 +7,7 @@
  * @file /modules/email/processes/messages.get.php
  * @author ju318 <ju318@naddle.net>
  * @license MIT License
- * @modified 2024. 10. 14.
+ * @modified 2024. 10. 18.
  *
  * @var \modules\email\Email $me
  */
