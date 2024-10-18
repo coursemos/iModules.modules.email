@@ -171,7 +171,7 @@ Admin.ready(async () => {
                             detail.hide();
                         } else {
                             const record = selection[0];
-                            detail.properties.update(detail, record);
+                            detail.properties.show(detail, record);
                             detail.show();
                         }
 
@@ -191,7 +191,15 @@ Admin.ready(async () => {
                 resizable: [false, false, false, true],
                 title: new Aui.Title({
                     text: 'Loading...',
-                    tools: [],
+                    tools: [
+                        new Aui.Title.Tool({
+                            iconClass: 'mi mi-close',
+                            handler: (tool) => {
+                                const grid = tool.getParent().getParent().getParent().getItemAt(0) as Aui.Grid.Panel;
+                                grid.deselectAll();
+                            },
+                        }),
+                    ],
                 }),
                 items: [
                     new Aui.Panel({
@@ -201,18 +209,31 @@ Admin.ready(async () => {
                         html: '<div data-role="massage"></div>',
                     }),
                 ],
-                update: async (panel: Aui.Panel, record: Aui.Data.Record) => {
+                show: async (detail: Aui.Panel, record: Aui.Data.Record) => {
+                    detail.properties.loading ??= new Aui.Loading(detail, {
+                        type: 'column',
+                        direction: 'column',
+                        text: '데이터를 불러오고 있습니다.',
+                    }).show();
+
                     const results = await Ajax.get(me.getProcessUrl('message'), {
                         message_id: record.get('message_id'),
                     });
-                    panel.getTitle().setTitle(record.get('title'));
 
-                    const content = panel.getItemAt(0) as Aui.Panel;
-                    if (content.isRendered() == false) {
-                        content.render();
+                    if (results.success == true) {
+                        detail.getTitle().setTitle(record.get('title'));
+                        const content = detail.getItemAt(0) as Aui.Panel;
+                        const $massage = Html.get('div[data-role=massage]', content.$getContent());
+                        $massage.html(String(results.data));
+
+                        if (content.isRendered() == false) {
+                            content.render();
+                        }
+                    } else {
+                        // 데이터를 불러오지 못했습니다.
                     }
-                    const $massage = Html.get('div[data-role=massage]', content.$getContent());
-                    $massage.html(String(results.data));
+
+                    detail.properties.loading.hide();
                 },
             }),
         ],
