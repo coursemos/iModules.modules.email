@@ -75,11 +75,10 @@ if ($sorters !== null) {
     foreach ($sorters as $field => $direction) {
         $records->orderBy($field, $direction);
     }
-    if (isset($sorters->sended_at) == false) {
+    if (isset($sorters->title) == false) {
         $records->orderBy('title', 'ASC');
     }
 }
-
 $total = $records->copy()->count();
 $records = $records->limit($start, $limit)->get('message_id');
 if ($records === null) {

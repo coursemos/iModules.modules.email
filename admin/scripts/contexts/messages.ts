@@ -134,6 +134,7 @@ Admin.ready(async () => {
                     url: me.getProcessUrl('messages'),
                     primaryKeys: ['message_id'],
                     limit: 50,
+                    sorters: { sended_at: 'DESC' },
                     remoteSort: true,
                     remoteFilter: true,
                 }),
