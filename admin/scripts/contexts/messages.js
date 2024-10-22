@@ -6,14 +6,13 @@
  * @file /modules/email/admin/scripts/contexts/messages.ts
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
- * @modified 2024. 10. 18.
- *
+ * @modified 2024. 10. 22.
  */
 Admin.ready(async () => {
     const me = Admin.getModule('email');
     return new Aui.Panel({
         id: 'messages',
-        title: (await me.getText('admin.contexts.messages')),
+        title: await me.getText('admin.contexts.messages'),
         iconClass: 'mi mi-message-dots',
         layout: 'column',
         border: false,
@@ -53,7 +52,7 @@ Admin.ready(async () => {
                 ]),
                 columns: [
                     {
-                        text: (await me.getText('admin.messages.columns.title')),
+                        text: await me.getText('admin.messages.columns.title'),
                         dataIndex: 'title',
                         selectable: true,
                         sortable: true,
@@ -61,23 +60,23 @@ Admin.ready(async () => {
                         flex: 1,
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.sended_by')),
+                        text: await me.getText('admin.messages.columns.sended_by'),
                         dataIndex: 'sended_by',
                         width: 260,
-                        renderer: (value, record) => {
+                        renderer: (value) => {
                             return me.getMemberName(value);
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.member_by')),
+                        text: await me.getText('admin.messages.columns.member_by'),
                         dataIndex: 'member_by',
                         width: 260,
-                        renderer: (value, record) => {
+                        renderer: (value) => {
                             return me.getMemberName(value);
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.sended_at')),
+                        text: await me.getText('admin.messages.columns.sended_at'),
                         dataIndex: 'sended_at',
                         width: 150,
                         sortable: true,
@@ -89,7 +88,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.checked_at')),
+                        text: await me.getText('admin.messages.columns.checked_at'),
                         dataIndex: 'checked_at',
                         width: 150,
                         sortable: true,
@@ -106,7 +105,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.status')),
+                        text: await me.getText('admin.messages.columns.status'),
                         dataIndex: 'status',
                         width: 100,
                         sortable: true,
@@ -185,7 +184,7 @@ Admin.ready(async () => {
                 },
             }),
             new Aui.Panel({
-                width: 540, // 템플릿에 따라 다를 여지가 있음.
+                width: 540,
                 hidden: true,
                 border: [false, false, false, true],
                 resizable: [false, false, false, true],

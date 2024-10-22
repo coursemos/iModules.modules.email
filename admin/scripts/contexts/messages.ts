@@ -6,16 +6,14 @@
  * @file /modules/email/admin/scripts/contexts/messages.ts
  * @author pbj <ju318@ubion.co.kr>
  * @license MIT License
- * @modified 2024. 10. 18.
- *
+ * @modified 2024. 10. 22.
  */
-
 Admin.ready(async () => {
     const me = Admin.getModule('email') as modules.email.admin.Email;
 
     return new Aui.Panel({
         id: 'messages',
-        title: (await me.getText('admin.contexts.messages')) as string,
+        title: await me.getText('admin.contexts.messages'),
         iconClass: 'mi mi-message-dots',
         layout: 'column',
         border: false,
@@ -54,7 +52,7 @@ Admin.ready(async () => {
                 ]),
                 columns: [
                     {
-                        text: (await me.getText('admin.messages.columns.title')) as string,
+                        text: await me.getText('admin.messages.columns.title'),
                         dataIndex: 'title',
                         selectable: true,
                         sortable: true,
@@ -62,23 +60,23 @@ Admin.ready(async () => {
                         flex: 1,
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.sended_by')) as string,
+                        text: await me.getText('admin.messages.columns.sended_by'),
                         dataIndex: 'sended_by',
                         width: 260,
-                        renderer: (value, record) => {
+                        renderer: (value) => {
                             return me.getMemberName(value);
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.member_by')) as string,
+                        text: await me.getText('admin.messages.columns.member_by'),
                         dataIndex: 'member_by',
                         width: 260,
-                        renderer: (value, record) => {
+                        renderer: (value) => {
                             return me.getMemberName(value);
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.sended_at')) as string,
+                        text: await me.getText('admin.messages.columns.sended_at'),
                         dataIndex: 'sended_at',
                         width: 150,
                         sortable: true,
@@ -90,7 +88,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.checked_at')) as string,
+                        text: await me.getText('admin.messages.columns.checked_at'),
                         dataIndex: 'checked_at',
                         width: 150,
                         sortable: true,
@@ -106,7 +104,7 @@ Admin.ready(async () => {
                         },
                     },
                     {
-                        text: (await me.getText('admin.messages.columns.status')) as string,
+                        text: await me.getText('admin.messages.columns.status'),
                         dataIndex: 'status',
                         width: 100,
                         sortable: true,
