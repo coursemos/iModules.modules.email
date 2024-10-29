@@ -67,12 +67,12 @@ class Email extends \Module
     /**
      * 메시지를 가져온다.
      *
-     * @param ?string $message_id 메시지아이디 (NULL 인 경우 빈 메시지 객체를 가져온다.)
+     * @param string $message_id 메시지아이디
      * @return ?\modules\email\dtos\Message $message
      */
-    public function getMessage(?string $message_id = null, $is_refresh = false): ?\modules\email\dtos\Message
+    public function getMessage(string $message_id): ?\modules\email\dtos\Message
     {
-        if ($is_refresh == false && isset(self::$_messages[$message_id]) == true) {
+        if (isset(self::$_messages[$message_id]) == true) {
             return self::$_messages[$message_id];
         }
         $message = $this->db()

@@ -16,11 +16,13 @@
 
 $message_id = Request::get('id', true);
 
-if ($me->getMessage($message_id)->getReadAt() === null) {
-    $me->db()
-        ->update($me->table('messages'), ['checked_at' => time()])
-        ->where('message_id', $message_id)
-        ->execute();
+if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $message_id)) {
+    if ($me->getMessage($message_id)?->getCheckedAt() === null) {
+        $me->db()
+            ->update($me->table('messages'), ['checked_at' => time()])
+            ->where('message_id', $message_id)
+            ->execute();
+    }
 }
 
 exit();

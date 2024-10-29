@@ -12,13 +12,13 @@
 div[data-component][data-type='text'][data-role='text'] {
     & > div[data-role='container'] {
         > div[data-role='content'] {
+            padding: 0;
             div[data-role='massage'] {
                 /* 메일 content*/
                 all: unset;
                 display: block;
                 background-color: white;
                 color: black;
-                margin-top:-10px;
             }
         }
     }
