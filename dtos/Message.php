@@ -113,7 +113,6 @@ class Message
         $this->_sended_name = $message->sended_name;
         $this->_sended_at = $message->sended_at;
         $this->_checked_at = $message->checked_at;
-
         $this->_status = $message->status;
         $this->_response = $message->response;
     }

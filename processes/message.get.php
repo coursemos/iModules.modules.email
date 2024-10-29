@@ -27,4 +27,4 @@ if ($me->getAdmin()->checkPermission('messages') == false) {
 $message_id = Request::get('message_id', true);
 
 $results->success = true;
-$results->data = $me->getMessage($message_id)->getContent();
+$results->data = $me->getMessage($message_id)?->getContent();

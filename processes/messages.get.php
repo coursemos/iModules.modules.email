@@ -89,7 +89,7 @@ if ($records === null) {
 }
 
 foreach ($records as &$record) {
-    $record = $me->getMessage($record)->getJson();
+    $record = $me->getMessage($record)?->getJson();
 }
 
 $results->success = true;

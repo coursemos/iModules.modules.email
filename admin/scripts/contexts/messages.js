@@ -184,7 +184,7 @@ Admin.ready(async () => {
                 },
             }),
             new Aui.Panel({
-                width: 540,
+                width: 540, // 템플릿에 따라 다를 여지가 있음.
                 hidden: true,
                 border: [false, false, false, true],
                 resizable: [false, false, false, true],
