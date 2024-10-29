@@ -72,6 +72,9 @@ class Email extends \Module
      */
     public function getMessage(string $message_id): ?\modules\email\dtos\Message
     {
+        if (isset(self::$_messages[$message_id]) == true) {
+            return self::$_messages[$message_id];
+        }
         $message = $this->db()
             ->select()
             ->from($this->table('messages'))
