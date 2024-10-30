@@ -18,6 +18,16 @@ class Message
     private string $_id;
 
     /**
+     * @var \modules\email\dtos\Address $_to 수신자
+     */
+    private \modules\email\dtos\Address $_to;
+
+    /**
+     * @var \modules\email\dtos\Address $_to 전송자
+     */
+    private \modules\email\dtos\Address $_from;
+
+    /**
      * @var int $_member_id 수신자회원고유값
      */
     private int $_member_id;
@@ -53,34 +63,19 @@ class Message
     private string $_content;
 
     /**
-     * @var string $_template 본문템플릿
-     */
-    private string $_template;
-
-    /**
-     * @var string $_sended_by 발송자회원고유값
-     */
-    private string $_sended_by;
-
-    /**
-     * @var string $_sended_email 발송자메일주소
-     */
-    private string $_sended_email;
-
-    /**
-     * @var string $_sended_name 발송자명
+     * @var object $_template 메일템플릿
      */
     private object $_template;
 
     /**
-     * @var string $_sended_at 발송일시
+     * @var int $_sended_at 발송일시
      */
-    private string $_sended_at;
+    private int $_sended_at;
 
     /**
-     * @var ?string $_checked_at 확인일시
+     * @var ?int $_checked_at 확인일시
      */
-    private ?string $_checked_at;
+    private ?int $_checked_at;
 
     /**
      * @var string $_status 발송상태
@@ -99,18 +94,19 @@ class Message
      */
     public function __construct(object $message)
     {
+        /**
+         * @var \modules\email\Email $mEmail
+         */
+        $mEmail = \Modules::get('email');
+
         $this->_id = $message->message_id;
-        $this->_member_id = $message->member_id;
-        $this->_email = $message->email;
-        $this->_name = $message->name;
+        $this->_to = $mEmail->getAddress($message->email, $message->name, $message->member_id);
+        $this->_from = $mEmail->getAddress($message->sended_email, $message->sended_name, $message->sended_by);
         $this->_component_type = $message->component_type;
         $this->_component_name = $message->component_name;
         $this->_title = $message->title;
         $this->_content = $message->content;
-        $this->_template = $message->template;
-        $this->_sended_by = $message->sended_by;
-        $this->_sended_email = $message->sended_email;
-        $this->_sended_name = $message->sended_name;
+        $this->_template = json_decode($message->template);
         $this->_sended_at = $message->sended_at;
         $this->_checked_at = $message->checked_at;
         $this->_status = $message->status;
@@ -130,39 +126,11 @@ class Message
     /**
      * 확인일시를 가져온다.
      *
-     * @return ?string $checked_at
+     * @return ?int $checked_at
      */
-    public function getCheckedAt(): ?string
+    public function getCheckedAt(): ?int
     {
         return $this->_checked_at;
-    }
-
-    /**
-     * 발송자를 가져온다.
-     *
-     * @return \modules\email\dtos\Address $address
-     */
-    public function getSendedBy(): \modules\email\dtos\Address
-    {
-        /**
-         * @var \modules\email\Email $mEmail
-         */
-        $mEmail = \Modules::get('email');
-        return $mEmail->getAddress($this->_sended_email, $this->_sended_name, $this->_sended_by);
-    }
-
-    /**
-     * 수신자를  가져온다.
-     *
-     * @return \modules\email\dtos\Address $address
-     */
-    public function getMemberBy(): \modules\email\dtos\Address
-    {
-        /**
-         * @var \modules\email\Email $mEmail
-         */
-        $mEmail = \Modules::get('email');
-        return $mEmail->getAddress($this->_email, $this->_name, $this->_member_id);
     }
 
     /**
@@ -211,16 +179,11 @@ class Message
     {
         $message = new \stdClass();
         $message->message_id = $this->_id;
-        $message->member_id = $this->_member_id;
-        $message->member_by = $this->getMemberBy()->getJson();
-        $message->email = $this->_email;
-        $message->name = $this->_name;
+        $message->to = $this->_to->getJson();
+        $message->from = $this->_from->getJson();
         $message->component_type = $this->_component_type;
         $message->component_name = $this->_component_name;
         $message->title = $this->_title;
-        $message->sended_by = $this->getSendedBy()->getJson();
-        $message->sended_email = $this->_sended_email;
-        $message->sended_name = $this->_sended_name;
         if ($is_content === true) {
             $message->content = $this->getContent(true);
         }
