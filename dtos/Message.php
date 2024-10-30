@@ -201,7 +201,13 @@ class Message
         return $this->_content;
     }
 
-    public function getJson(): object
+    /**
+     * JSON 으로 변환한다.
+     *
+     * @param bool $is_content 메시지본문 포함여부
+     * @return object $message
+     */
+    public function getJson(bool $is_content = false): object
     {
         $message = new \stdClass();
         $message->message_id = $this->_id;
@@ -212,11 +218,12 @@ class Message
         $message->component_type = $this->_component_type;
         $message->component_name = $this->_component_name;
         $message->title = $this->_title;
-        $message->content = $this->_content;
-        $message->template = $this->_template;
         $message->sended_by = $this->getSendedBy()->getJson();
         $message->sended_email = $this->_sended_email;
         $message->sended_name = $this->_sended_name;
+        if ($is_content === true) {
+            $message->content = $this->getContent(true);
+        }
         $message->sended_at = $this->_sended_at;
         $message->checked_at = $this->_checked_at;
         $message->status = $this->_status;
