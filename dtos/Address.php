@@ -7,7 +7,7 @@
  * @file /modules/email/dtos/Address.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 13.
+ * @modified 2024. 10. 30.
  */
 namespace modules\email\dtos;
 class Address
@@ -25,7 +25,12 @@ class Address
     /**
      * @var int $_member_id 회원고유값
      */
-    private ?int $_member_id;
+    private int $_member_id;
+
+    /**
+     * @var \modules\member\dtos\Member $_member 회원정보
+     */
+    private \modules\member\dtos\Member $_member;
 
     /**
      * 이메일 구조체를 정의한다.
@@ -38,7 +43,7 @@ class Address
     {
         $this->_address = $address;
         $this->_name = $name;
-        $this->_member_id = $member_id;
+        $this->_member_id = $member_id ?? 0;
     }
 
     /**
@@ -81,17 +86,21 @@ class Address
     }
 
     /**
-     * 회원사진을 가져온다.
+     * 회원정보를 가져온다.
      *
-     * @return string $_photo
+     * @return \modules\member\dtos\Member $member
      */
-    public function getPhoto(): string
+    public function getMember(): \modules\member\dtos\Member
     {
-        /**
-         * @var \modules\member\Member $mMember
-         */
-        $mMember = \Modules::get('member');
-        return $mMember->getMemberPhoto($this->_member_id);
+        if (isset($this->_member) == false) {
+            /**
+             * @var \modules\member\Member $mMember
+             */
+            $mMember = \Modules::get('member');
+            $this->_member = $mMember->getMember($this->_member_id)->setNicknamePlaceHolder($this->_name);
+        }
+
+        return $this->_member;
     }
 
     /**
@@ -104,8 +113,7 @@ class Address
         $address = new \stdClass();
         $address->address = $this->_address;
         $address->name = $this->_name;
-        $address->member_id = $this->_member_id;
-        $address->photo = $this->getPhoto();
+        $address->member = $this->getMember()->getJson();
 
         return $address;
     }

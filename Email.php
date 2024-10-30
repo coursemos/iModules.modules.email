@@ -7,7 +7,7 @@
  * @file /modules/email/Email.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 11.
+ * @modified 2024. 10. 30.
  */
 namespace modules\email;
 class Email extends \Module
@@ -67,7 +67,7 @@ class Email extends \Module
     /**
      * 메시지를 가져온다.
      *
-     * @param string $message_id 메시지아이디
+     * @param string $message_id 메시지고유값
      * @return ?\modules\email\dtos\Message $message
      */
     public function getMessage(string $message_id): ?\modules\email\dtos\Message
@@ -75,6 +75,7 @@ class Email extends \Module
         if (isset(self::$_messages[$message_id]) == true) {
             return self::$_messages[$message_id];
         }
+
         $message = $this->db()
             ->select()
             ->from($this->table('messages'))
