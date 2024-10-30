@@ -5,9 +5,9 @@
  * 메시지 구조체를 정의한다.
  *
  * @file /modules/email/dtos/Message.php
- * @author pbj <ju318@ubion.co.kr>
+ * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 18.
+ * @modified 2024. 10. 30.
  */
 namespace modules\email\dtos;
 class Message
@@ -70,7 +70,7 @@ class Message
     /**
      * @var string $_sended_name 발송자명
      */
-    private string $_sended_name;
+    private object $_template;
 
     /**
      * @var string $_sended_at 발송일시
@@ -173,12 +173,32 @@ class Message
      */
     public function getContent(bool $is_template = false): string
     {
-        /**
-         * @var \modules\email\Email $mEmail
-         */
-        $mEmail = \Modules::get('email');
-        $sender = $mEmail->getSender(\Modules::get($this->_component_name));
-        return $sender->getContent(true, $this->_content);
+        if ($is_template == true) {
+            /**
+             * @var \modules\email\Email $mEmail
+             */
+            $mEmail = \Modules::get('email');
+            $site = \Sites::get();
+            $template = $mEmail->getTemplate($this->_template ?? $mEmail->getConfigs('template'));
+
+            // @todo 발송한 사이트를 저장한 뒤 실제로 발송한 사이트 정보로 대치
+            $template->assign(
+                'logo',
+                $site->getLogo()?->getUrl('view', true) ??
+                    \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
+            );
+            $template->assign(
+                'emblem',
+                $site->getEmblem()?->getUrl('view', true) ??
+                    \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
+            );
+            $template->assign('url', $site->getUrl());
+            $template->assign('content', $this->_content);
+
+            return $template->getLayout();
+        }
+
+        return $this->_content;
     }
 
     public function getJson(): object
