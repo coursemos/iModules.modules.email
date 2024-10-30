@@ -1,13 +1,13 @@
 <?php
 /**
- * 이 파일은 이메일 모듈의 일부입니다. (https://www.coursemos.co.kr)
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
  * 이메일 발송 내역을 가져온다.
  *
  * @file /modules/email/processes/messages.get.php
- * @author ju318 <ju318@naddle.net>
+ * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 18.
+ * @modified 2024. 10. 30.
  *
  * @var \modules\email\Email $me
  */
@@ -29,7 +29,6 @@ $start = Request::getInt('start') ?? 0;
 $limit = Request::getInt('limit') ?? 50;
 $filters = Request::getJson('filters');
 $keyword = Request::get('keyword');
-$results->keyword = $keyword;
 
 $records = $me
     ->db()
@@ -81,13 +80,6 @@ if ($sorters !== null) {
 
 $total = $records->copy()->count();
 $records = $records->limit($start, $limit)->get('message_id');
-
-if ($records === null) {
-    $results->success = true;
-    $results->message = $me->getErrorText('NOT_FOUND_DATA');
-    return;
-}
-
 foreach ($records as &$record) {
     $record = $me->getMessage($record)?->getJson();
 }
