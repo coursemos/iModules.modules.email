@@ -1,13 +1,13 @@
 <?php
 /**
- * 이 파일은 이메일 모듈의 일부입니다. (https://www.coursemos.co.kr)
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
  *
  * 이메일 발송 내역 디테일을 가져온다.
  *
  * @file /modules/email/processes/message.get.php
- * @author ju318 <ju318@naddle.net>
+ * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 18.
+ * @modified 2024. 11. 1.
  *
  * @var \modules\email\Email $me
  */
@@ -25,6 +25,12 @@ if ($me->getAdmin()->checkPermission('messages') == false) {
 }
 
 $message_id = Request::get('message_id', true);
+$message = $me->getMessage($message_id);
+if ($message === null) {
+    $results->success = false;
+    $results->message = $me->getErrorText('NOT_FOUND_DATA');
+    return;
+}
 
 $results->success = true;
-$results->data = $me->getMessage($message_id)?->getContent();
+$results->data = $message->getJson(true);

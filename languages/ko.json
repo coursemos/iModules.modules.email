@@ -1,5 +1,6 @@
 {
     "admin": {
+        "keyword": "수신자/제목",
         "configs": {
             "default": "기본설정",
             "template": "메일템플릿",
@@ -16,32 +17,23 @@
             "smtp_password": "패스워드"
         },
         "contexts": {
-            "messages": "이메일관리",
-            "loading" : "데이터를 불러오고 있습니다."
+            "messages": "이메일관리"
         },
         "scopes": {
-            "messages": "발송내역관리",
-            "send": "메일발송"
+            "messages": "메시지내역"
         },
-        "tabs": {
-            "messages": "발송내역",
-            "send": "이메일발송"
+        "status": {
+            "TRUE": "성공",
+            "FALSE": "실패"
         },
         "messages": {
             "columns": {
                 "title": "제목",
-                "sended_by": "발송자",
-                "member_by" : "수신자",
-                "sended_at" : "보낸시간",
-                "checked_at" : "확인시간",
-                "status" : "발송상태"
-            },
-            "form": {
-                "keyword" : "수신자,이메일"
-            },
-            "status" : {
-                "true": "성공",
-                "false": "실패"
+                "to": "수신자",
+                "from": "발신자",
+                "sended_at": "전송시각",
+                "checked_at": "확인시각",
+                "status": "전송상태"
             }
         }
     }

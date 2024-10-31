@@ -5,9 +5,9 @@
  * 모듈관리자 클래스를 정의한다.
  *
  * @file /modules/email/admin/Email.php
- * @author ju318 <ju318@naddle.net>
+ * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 14.
+ * @modified 2024. 11. 1.
  */
 namespace modules\email\admin;
 class Email extends \modules\admin\admin\Component
@@ -24,7 +24,7 @@ class Email extends \modules\admin\admin\Component
         if ($this->hasPermission('email') == true) {
             $contexts[] = \modules\admin\dtos\Context::init($this)
                 ->setContext('messages')
-                ->setTitle($this->getText('admin.contexts.messages'), 'mi mi-message-dots');
+                ->setTitle($this->getText('admin.contexts.messages'), 'xi xi-letter');
         }
 
         return $contexts;
@@ -56,10 +56,10 @@ class Email extends \modules\admin\admin\Component
     {
         $scopes = [];
 
-        $scopes[] = \modules\admin\dtos\Scope::init($this)
-            ->setScope('email', $this->getText('admin.scopes.email.title'))
-            ->addChild('messages', $this->getText('admin.scopes.email.messages'))
-            ->addChild('send', $this->getText('admin.scopes.email.send'));
+        $scopes[] = \modules\admin\dtos\Scope::init($this)->setScope(
+            'messages',
+            $this->getText('admin.scopes.messages.title')
+        );
 
         return $this->setScopes($scopes);
     }

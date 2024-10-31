@@ -6,7 +6,7 @@
  * @file /modules/email/admin/scripts/Email.ts
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 22.
+ * @modified 2024. 11. 1.
  */
 var modules;
 (function (modules) {
@@ -133,18 +133,81 @@ var modules;
                     });
                 }
                 /**
-                 * 발송/수신자명을 가져온다.
+                 * 수신자 정보를 가져온다.
                  *
+                 * @param {object} address
                  */
-                getMemberName(member) {
+                getAddress(address) {
+                    if (modules.member === null) {
+                        return '';
+                    }
                     return ('<i class="photo" style="background-image:url(' +
-                        member.photo +
+                        address.member.photo +
                         ')"></i>' +
-                        member.name +
+                        address.name +
                         ' &lt;' +
-                        member.address +
+                        address.address +
                         '&gt;');
                 }
+                /**
+                 * 메세지관리
+                 */
+                messages = {
+                    /**
+                     * 메세지 상세내용을 확인한다.
+                     *
+                     * @param {string} message_id - 메시지고유값
+                     * @param {string} title - 제목
+                     * @param {object} to - 수신자
+                     */
+                    show: async (message_id, title, to) => {
+                        new Aui.Window({
+                            title: title,
+                            width: 600,
+                            height: 500,
+                            modal: true,
+                            resizable: true,
+                            items: [
+                                new Aui.Panel({
+                                    border: false,
+                                    layout: 'fit',
+                                    readonly: true,
+                                    padding: 0,
+                                    topbar: [
+                                        new Aui.Form.Field.Display({
+                                            value: to,
+                                            renderer: (value) => {
+                                                return this.getAddress(value);
+                                            },
+                                        }),
+                                    ],
+                                    items: [
+                                        new Aui.Text({
+                                            padding: 0,
+                                            layout: 'content',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            listeners: {
+                                show: async (window) => {
+                                    if (message_id !== null) {
+                                        const results = await Ajax.get(this.getProcessUrl('message'), {
+                                            message_id: message_id,
+                                        });
+                                        if (results.success == true) {
+                                            const $content = window.getItemAt(0).getItemAt(0).$getContent();
+                                            $content.html(results.data.content);
+                                        }
+                                        else {
+                                            window.close();
+                                        }
+                                    }
+                                },
+                            },
+                        }).show();
+                    },
+                };
             }
             admin.Email = Email;
         })(admin = email.admin || (email.admin = {}));

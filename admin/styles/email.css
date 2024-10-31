@@ -4,46 +4,22 @@
  * 이메일 발송 내역 스타일시트를 정의한다.
  *
  * @file /modules/email/admin/styles/email.css
- * @author pbj <ju318@ubion.co.kr>
+ * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 18.
+ * @modified 2024. 11. 1.
  */
+section[data-role='admin'] {
+    div[data-type='panel'][data-role='grid'] {
+        div[data-role='body'] {
+            > div[data-role='rows'] {
+                > div[data-role='row'] {
+                    > div[data-role='column'] {
+                        &.TRUE {
+                            color: var(--aui-color-accent-700);
+                        }
 
-div[data-component][data-type='text'][data-role='text'] {
-    & > div[data-role='container'] {
-        > div[data-role='content'] {
-            padding: 0;
-            div[data-role='massage'] {
-                /* 메일 content*/
-                all: unset;
-                display: block;
-                background-color: white;
-                color: black;
-            }
-        }
-    }
-}
-
-div[data-component][data-type='panel'][data-role='grid'] {
-    & > div[data-role='container'] {
-        & > div[data-role='content'] {
-            & > div[data-role='body'] {
-                & > div[data-role='rows'],
-                & > div[data-role='group'] {
-                    & > div[data-role='row'] {
-                        & > div[data-role] {
-                            &[data-role='column'] {
-                                > div[data-role='view'] {
-                                    /* 상태 빨강 파랑t*/
-                                    span.success {
-                                        color: blue;
-                                    }
-
-                                    span.fail {
-                                        color: red;
-                                    }
-                                }
-                            }
+                        &.FALSE {
+                            color: var(--aui-color-danger-600);
                         }
                     }
                 }
