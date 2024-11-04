@@ -152,10 +152,6 @@
                     "type": "json",
                     "comment": "답장받는사람"
                 },
-                "template": {
-                    "type": "json",
-                    "comment": "본문템플릿"
-                },
                 "sended_by": {
                     "type": "int",
                     "comment": "발송자회원고유값"
