@@ -408,7 +408,7 @@ class Sender
                     $this->getContent(true),
                     '<img src="' .
                         $domain->getUrl(true) .
-                        $mEmail->getApiUrl('checked/' . $message_id) .
+                        $mEmail->getApiUrl('checked/' . $message_id . '.png') .
                         '" alt="" style="width:1px; height:1px;">',
                     '</body>',
                     '</html>'
