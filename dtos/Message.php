@@ -7,7 +7,7 @@
  * @file /modules/email/dtos/Message.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 30.
+ * @modified 2024. 11. 4.
  */
 namespace modules\email\dtos;
 class Message
@@ -63,11 +63,6 @@ class Message
     private string $_content;
 
     /**
-     * @var object $_template 메일템플릿
-     */
-    private object $_template;
-
-    /**
      * @var int $_sended_at 발송일시
      */
     private int $_sended_at;
@@ -106,7 +101,6 @@ class Message
         $this->_component_name = $message->component_name;
         $this->_title = $message->title;
         $this->_content = $message->content;
-        $this->_template = json_decode($message->template);
         $this->_sended_at = $message->sended_at;
         $this->_checked_at = $message->checked_at;
         $this->_status = $message->status;
@@ -136,36 +130,10 @@ class Message
     /**
      * 템플릿이 적용된 컨텐츠를 가져온다.
      *
-     * @param bool $is_template 템플릿포함여부
      * @return string $content
      */
-    public function getContent(bool $is_template = false): string
+    public function getContent(): string
     {
-        if ($is_template == true) {
-            /**
-             * @var \modules\email\Email $mEmail
-             */
-            $mEmail = \Modules::get('email');
-            $site = \Sites::get();
-            $template = $mEmail->getTemplate($this->_template ?? $mEmail->getConfigs('template'));
-
-            // @todo 발송한 사이트를 저장한 뒤 실제로 발송한 사이트 정보로 대치
-            $template->assign(
-                'logo',
-                $site->getLogo()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
-            );
-            $template->assign(
-                'emblem',
-                $site->getEmblem()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
-            );
-            $template->assign('url', $site->getUrl());
-            $template->assign('content', $this->_content);
-
-            return $template->getLayout();
-        }
-
         return $this->_content;
     }
 
@@ -185,7 +153,7 @@ class Message
         $message->component_name = $this->_component_name;
         $message->title = $this->_title;
         if ($is_content === true) {
-            $message->content = $this->getContent(true);
+            $message->content = $this->_content;
         }
         $message->sended_at = $this->_sended_at;
         $message->checked_at = $this->_checked_at;
