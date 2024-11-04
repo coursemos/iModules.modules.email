@@ -7,7 +7,7 @@
  * @file /modules/email/Email.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 30.
+ * @modified 2024. 11. 2.
  */
 namespace modules\email;
 class Email extends \Module
@@ -16,6 +16,15 @@ class Email extends \Module
      * @var \modules\email\dtos\Message[] $_messages 이슈
      */
     private static array $_messages = [];
+
+    /**
+     * 모듈을 설정을 초기화한다.
+     */
+    public function init(): void
+    {
+        \AutoLoader::register($this->getBase() . '/vendor', '/');
+        \AutoLoader::register($this->getBase() . '/vendor', '/src');
+    }
 
     /**
      * 이메일을 전송하기 위한 전송자 클래스를 가져온다.

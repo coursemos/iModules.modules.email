@@ -7,7 +7,7 @@
  * @file /modules/email/classes/Sender.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 10. 13.
+ * @modified 2024. 11. 4.
  */
 namespace modules\email;
 class Sender
@@ -43,14 +43,29 @@ class Sender
     private ?string $_content = null;
 
     /**
+     * @var string $_content 스타일이 적용된 메일내용
+     */
+    private string $_contentWithStyle;
+
+    /**
+     * @var string $_contentWithTemplet 템플릿이 적용된 메일내용
+     */
+    private string $_contentWithTemplet;
+
+    /**
+     * @var string[] $_styles 스타일시트
+     */
+    private array $_styles = [];
+
+    /**
      * @var ?object $_template 템플릿설정
      */
     private ?object $_template = null;
 
     /**
-     * @var ?string $_message_id 발송ID
+     * @var \Template $_templateClass 템플릿클래스
      */
-    private ?string $_message_id = null;
+    private \Template $_templateClass;
 
     /**
      * 이메일 전송자 클래스를 정의한다.
@@ -188,37 +203,85 @@ class Sender
      * 본문을 가져온다.
      *
      * @param bool $is_template 이메일 발송을 위한 템플릿을 포함한 내용을 가져올지 여부
-     * @param string $content 템플릿이 적용된 내용을 가져오기 위한 파라메터
      * @return string $content
      */
-    public function getContent(bool $is_template = false, string $content = null): string
+    public function getContent(bool $is_template = false): string
     {
-        $content = $content ?? $this->_content;
+        if (isset($this->_contentWithStyle) == false) {
+            if (count($this->_styles) == 0) {
+                $this->_contentWithStyle = $this->_content;
+            } else {
+                $content = $this->_content;
+                $html = \Pelago\Emogrifier\CssInliner::fromHtml($this->_content);
+                foreach ($this->_styles as $path => &$content) {
+                    $content ??= is_file($path) == true ? file_get_contents($path) : '';
+                    $html->inlineCss($content);
+                }
 
-        if ($is_template == true) {
-            /**
-             * @var \modules\email\Email $mEmail
-             */
-            $mEmail = \Modules::get('email');
-            $site = \Sites::get();
-            $template = $mEmail->getTemplate($this->_template ?? $mEmail->getConfigs('template'));
-            $template->assign(
-                'logo',
-                $site->getLogo()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
-            );
-            $template->assign(
-                'emblem',
-                $site->getEmblem()?->getUrl('view', true) ??
-                    \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
-            );
-            $template->assign('url', $site->getUrl());
-            $template->assign('content', $content);
+                $dom = $html->getDomDocument();
+                \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($dom)
+                    ->removeElementsWithDisplayNone()
+                    ->removeRedundantClassesAfterCssInlined($html);
 
-            $content = $template->getLayout();
+                \Pelago\Emogrifier\HtmlProcessor\CssVariableEvaluator::fromDomDocument($dom)->evaluateVariables();
+                $this->_contentWithStyle = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument(
+                    $dom
+                )->renderBodyContent();
+            }
         }
 
+        $content = $this->_contentWithStyle;
+
+        if ($is_template == true) {
+            if (isset($this->_contentWithTemplet) == false) {
+                $template = $this->getTemplate();
+                $template->assign('content', '${CONTENT}');
+                $contentWithTemplet = $template->getLayout();
+
+                if (count($template->getPackage()->getStyles()) > 0) {
+                    $html = \Pelago\Emogrifier\CssInliner::fromHtml($contentWithTemplet);
+                    foreach ($template->getPackage()->getStyles() as $path) {
+                        if (is_file($template->getPath() . $path) == true) {
+                            $html->inlineCss(file_get_contents($template->getPath() . $path));
+                        }
+                    }
+
+                    $dom = $html->getDomDocument();
+                    \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($dom)
+                        ->removeElementsWithDisplayNone()
+                        ->removeRedundantClassesAfterCssInlined($html);
+
+                    \Pelago\Emogrifier\HtmlProcessor\CssVariableEvaluator::fromDomDocument($dom)->evaluateVariables();
+                    $contentWithTemplet = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument(
+                        $dom
+                    )->renderBodyContent();
+                }
+
+                $this->_contentWithTemplet = str_replace('${CONTENT}', $content, $contentWithTemplet);
+            }
+
+            $content = $this->_contentWithTemplet;
+        }
+
+        /**
+         * 일부 메일클라이언트의 경우 줄바꿈을 강제로 개행함으로 인하여,
+         * 줄바꿈을 제거한다.
+         */
+        $content = preg_replace("(\r\n|\n)", '', $content);
+
         return $content;
+    }
+
+    /**
+     * 본문스타일시트를 추가한다.
+     *
+     * @param string $style 스타일시트파일경로
+     * @return \modules\email\Sender $this
+     */
+    public function addStyle(string $style): \modules\email\Sender
+    {
+        $this->_styles[$style] = null;
+        return $this;
     }
 
     /**
@@ -236,15 +299,37 @@ class Sender
     /**
      * 메일템플릿설정을 가져온다.
      *
-     * @return object $template 템플릿설정
+     * @return \Template $template 템플릿설정
      */
-    public function getTemplate(): object
+    public function getTemplate(): \Template
     {
         /**
          * @var \modules\email\Email $mEmail
          */
         $mEmail = \Modules::get('email');
-        return $this->_template ?? $mEmail->getConfigs('template');
+
+        if (isset($this->_templateClass) == false) {
+            $this->_templateClass = $mEmail->getTemplate($this->_template ?? $mEmail->getConfigs('template'));
+        }
+
+        if ($this->_templateClass->getName() !== ($this->_template?->name ?? $mEmail->getConfigs('template')?->name)) {
+            unset($this->_templateClass);
+            return $this->getTemplate();
+        }
+
+        $site = \Sites::get();
+        $this->_templateClass->assign(
+            'logo',
+            $site->getLogo()?->getUrl('view', true) ?? \Domains::get()->getUrl() . \Configs::dir() . '/images/logo.png'
+        );
+        $this->_templateClass->assign(
+            'emblem',
+            $site->getEmblem()?->getUrl('view', true) ??
+                \Domains::get()->getUrl() . \Configs::dir() . '/images/emblem.png'
+        );
+        $this->_templateClass->assign('url', $site->getUrl());
+
+        return $this->_templateClass;
     }
 
     /**
@@ -319,7 +404,7 @@ class Sender
                     $style,
                     '</style>',
                     '</head>',
-                    '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; background: #f4f4f4; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
+                    '<body style="width: 100% !important; height: 100% !important; margin: 0; padding: 0; font-family: \'Apple SD Gothic Neo\', \'malgun gothic\', Helvetica, Georgia, Arial, sans-serif !important;">',
                     $this->getContent(true),
                     '<img src="' .
                         $domain->getUrl(true) .
