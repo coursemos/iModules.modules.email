@@ -35,5 +35,8 @@
             "type": "text",
             "default": "본 메일은 발신전용으로 회신되지 않습니다."
         }
-    }
+    },
+    "styles": [
+        "/styles/style.css"
+    ]
 }

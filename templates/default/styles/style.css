@@ -1,0 +1,56 @@
+/**
+ * 이 파일은 아이모듈 이메일모듈 일부입니다. (https://www.imodules.io)
+ *
+ * 이메일 본문 템플릿을 정의한다.
+ *
+ * @file /modules/email/templates/default/styles/style.css
+ * @author Arzz <arzz@arzz.com>
+ * @license MIT License
+ * @modified 2024. 11. 4.
+ */
+table.outer {
+    width: 100% !important;
+    min-width: 600px;
+    min-height: 100% !important;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+}
+
+table.inner {
+    width: 100%;
+    max-width: 640px;
+    background: #ffffff;
+    margin: 0 auto;
+}
+
+td.logo {
+    padding: 20px 0px;
+    font-size: 0;
+    text-align: center;
+}
+
+td.content {
+    padding: 20px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+td.footer {
+    background: #e5e5e5;
+    font-size: 12px;
+    color: #666;
+    padding: 20px;
+    line-height: 1.6;
+    word-break: break-all;
+}
+
+div.logo,
+div.emblem {
+    width: 200px;
+    height: 60px;
+    margin: 20px auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50% 50%;
+}
