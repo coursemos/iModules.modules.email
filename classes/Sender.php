@@ -214,7 +214,9 @@ class Sender
                 $content = $this->_content;
                 $html = \Pelago\Emogrifier\CssInliner::fromHtml($this->_content);
                 foreach ($this->_styles as $path => &$content) {
+                    $scss = new \ScssPhp\ScssPhp\Compiler();
                     $content ??= is_file($path) == true ? file_get_contents($path) : '';
+                    $content = $scss->compileString($content)->getCss();
                     $html->inlineCss($content);
                 }
 
