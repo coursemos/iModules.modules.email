@@ -7,7 +7,7 @@
  * @file /modules/email/classes/Sender.php
  * @author Arzz <arzz@arzz.com>
  * @license MIT License
- * @modified 2024. 11. 4.
+ * @modified 2024. 11. 7.
  */
 namespace modules\email;
 class Sender
@@ -312,7 +312,10 @@ class Sender
             $this->_templateClass = $mEmail->getTemplate($this->_template ?? $mEmail->getConfigs('template'));
         }
 
-        if ($this->_templateClass->getName() !== ($this->_template?->name ?? $mEmail->getConfigs('template')?->name)) {
+        if (
+            $this->_templateClass->getPathName() !==
+            ($this->_template?->name ?? $mEmail->getConfigs('template')?->name)
+        ) {
             unset($this->_templateClass);
             return $this->getTemplate();
         }
