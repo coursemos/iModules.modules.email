@@ -5,7 +5,7 @@
  * 이메일 주소 구조체를 정의한다.
  *
  * @file /modules/email/dtos/Address.php
- * @author Arzz <arzz@arzz.com>
+ * @author youlapark <youlapark@naddle.net>
  * @license MIT License
  * @modified 2024. 10. 30.
  */
@@ -97,7 +97,7 @@ class Address
              * @var \modules\member\Member $mMember
              */
             $mMember = \Modules::get('member');
-            $this->_member = $mMember->getMember($this->_member_id);
+            $this->_member = $mMember->getMember($this->_member_id)->setNicknamePlaceHolder($this->_name);
         }
 
         return $this->_member;
