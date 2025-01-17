@@ -97,7 +97,7 @@ class Address
              * @var \modules\member\Member $mMember
              */
             $mMember = \Modules::get('member');
-            $this->_member = $mMember->getMember($this->_member_id)->setNicknamePlaceHolder($this->_name);
+            $this->_member = $mMember->getMember($this->_member_id);
         }
 
         return $this->_member;
