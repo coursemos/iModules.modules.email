@@ -237,6 +237,7 @@ class Sender
         if ($is_template == true) {
             if (isset($this->_contentWithTemplet) == false) {
                 $template = $this->getTemplate();
+                $template->assign('title', $this->_title);
                 $template->assign('content', '${CONTENT}');
                 $contentWithTemplet = $template->getLayout();
 
