@@ -58,7 +58,7 @@ class Email extends \modules\admin\admin\Component
 
         $scopes[] = \modules\admin\dtos\Scope::init($this)->setScope(
             'messages',
-            $this->getText('admin.scopes.messages.title')
+            $this->getText('admin.scopes.messages')
         );
 
         return $this->setScopes($scopes);
